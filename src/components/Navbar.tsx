@@ -378,7 +378,7 @@ export default function Navbar() {
         )}
       </AnimatePresence>
     </>
-  );  );
+  );
 }
 
 function MobileMenuItem({ icon: Icon, label, to, active }: { icon: any, label: string, to: string, active?: boolean }) {
