@@ -4,7 +4,6 @@ import { BookOpen, Github, MessageCircle, Phone, Terminal, Send, MessageSquare, 
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import visionaryAvatar from '../assets/visionary-avatar.jpg';
-import signatureSvg from '../assets/signature.svg';
 import { supabase } from '../lib/supabase';
 
 export default function DesignBrief() {
@@ -248,15 +247,34 @@ export default function DesignBrief() {
         <div className="font-headline text-xs text-on-surface-variant uppercase tracking-[0.5em] mb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
           Directed by
         </div>
-        <motion.img 
-          src={signatureSvg} 
-          alt="Designer Signature"
-          initial={{ opacity: 0, scale: 0.8, filter: 'brightness(0.5) grayscale(1)' }}
-          whileInView={{ opacity: 1, scale: 1, filter: 'brightness(1) grayscale(0)' }}
-          viewport={{ once: true }}
-          transition={{ duration: 1.5, ease: "easeOut" }}
-          className="w-64 h-24 object-contain transition-all duration-500 group-hover:drop-shadow-[0_0_12px_rgba(128,236,255,0.6)]"
-        />
+        <svg 
+          viewBox="0 0 400 120" 
+          className="w-72 h-32 stroke-tertiary/40 group-hover:stroke-tertiary transition-all duration-700 group-hover:drop-shadow-[0_0_15px_rgba(128,236,255,0.6)]"
+          fill="none" 
+          strokeWidth="2.5" 
+          strokeLinecap="round" 
+          strokeLinejoin="round"
+        >
+          {/* Artistic "Liu" Signature Path */}
+          <motion.path 
+            initial={{ pathLength: 0, opacity: 0 }}
+            whileInView={{ pathLength: 1, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 2.5, ease: [0.4, 0, 0.2, 1] }}
+            d="M 100,60 C 120,30 140,20 150,50 C 160,80 140,100 170,80 C 190,60 210,30 220,50 C 230,70 210,90 240,80 C 260,70 280,40 300,60 M 140,40 L 160,60 M 210,40 L 230,60"
+            className="filter drop-shadow-sm"
+          />
+          {/* Elegant underline decoration */}
+          <motion.path
+            initial={{ pathLength: 0, opacity: 0 }}
+            whileInView={{ pathLength: 1, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1.5, delay: 1, ease: "easeOut" }}
+            d="M 120,95 Q 200,85 280,95"
+            strokeWidth="1"
+            className="opacity-30"
+          />
+        </svg>
       </div>
 
       {/* Link to Guestbook */}
