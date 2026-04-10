@@ -1,9 +1,10 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Globe, Camera, Edit2, Check, Menu, X, Activity, Zap, Headphones, Scale, MessageSquare, BookOpen } from 'lucide-react';
+import { Globe, Camera, Edit2, Check, Menu, X, Activity, Zap, Headphones, Scale, MessageSquare, BookOpen, LogOut } from 'lucide-react';
 import { cn } from '@/src/lib/utils';
 import { useTranslation } from 'react-i18next';
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { useAuth } from '../contexts/AuthContext';
 
 const navItems = [
   { name: '首页', path: '/' },
@@ -16,24 +17,22 @@ const navItems = [
 export default function Navbar() {
   const location = useLocation();
   const { t, i18n } = useTranslation();
+  const { user, logout, updateProfile } = useAuth();
   const [isLangOpen, setIsLangOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const langRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
   
-  const [avatarUrl, setAvatarUrl] = useState(() => {
-    return localStorage.getItem('aether-avatar') || 'https://picsum.photos/seed/aether-user/100/100';
-  });
-  const [nickname, setNickname] = useState(() => {
-    return localStorage.getItem('aether-nickname') || 'Guest';
-  });
   const [isEditingNickname, setIsEditingNickname] = useState(false);
   const [tempNickname, setTempNickname] = useState('');
   const [adminKey, setAdminKey] = useState(() => {
     return localStorage.getItem('aether-admin-key') || '';
   });
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const nickname = user?.nickname || 'Guest';
+  const avatarUrl = user?.avatar || 'https://picsum.photos/seed/aether-user/100/100';
 
   useEffect(() => {
     if (isMenuOpen) {
@@ -62,8 +61,7 @@ export default function Navbar() {
       const reader = new FileReader();
       reader.onloadend = () => {
         const base64String = reader.result as string;
-        setAvatarUrl(base64String);
-        localStorage.setItem('aether-avatar', base64String);
+        updateProfile(nickname, base64String);
       };
       reader.readAsDataURL(file);
     }
@@ -76,8 +74,7 @@ export default function Navbar() {
 
   const saveNickname = () => {
     if (tempNickname.trim()) {
-      setNickname(tempNickname.trim());
-      localStorage.setItem('aether-nickname', tempNickname.trim());
+      updateProfile(tempNickname.trim(), avatarUrl);
     }
     setIsEditingNickname(false);
   };
@@ -87,6 +84,11 @@ export default function Navbar() {
     setAdminKey(val);
     localStorage.setItem('aether-admin-key', val);
     window.dispatchEvent(new Event('adminStatusChanged'));
+  };
+
+  const handleLogout = () => {
+    logout();
+    setIsProfileOpen(false);
   };
 
   useEffect(() => {
@@ -288,6 +290,14 @@ export default function Navbar() {
                           </div>
                         )}
                       </div>
+
+                      <button
+                        onClick={handleLogout}
+                        className="mt-8 w-full py-3 rounded-xl border border-red-500/20 text-red-400 font-headline text-[10px] tracking-widest uppercase hover:bg-red-500/10 transition-all flex items-center justify-center gap-2"
+                      >
+                        <LogOut className="w-3 h-3" />
+                        {t('退出登录', 'Logout')}
+                      </button>
                     </div>
                   </motion.div>
                 )}

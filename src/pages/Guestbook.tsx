@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { MessageSquare, Send, Trash2, AlertCircle, Loader2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
+import { useAuth } from '../contexts/AuthContext';
 
 interface Message {
   id: string;
@@ -15,6 +16,7 @@ interface Message {
 
 export default function Guestbook() {
   const { t } = useTranslation();
+  const { user } = useAuth();
   const [newMessage, setNewMessage] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -23,26 +25,19 @@ export default function Guestbook() {
   const [localUserIdHash, setLocalUserIdHash] = useState<string>('');
   const [isAdmin, setIsAdmin] = useState(false);
   
-  const [localUserId] = useState(() => {
-    let id = localStorage.getItem('aether-user-id');
-    if (!id) {
-      id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-      localStorage.setItem('aether-user-id', id);
-    }
-    return id;
-  });
+  const localUserId = user?.id || 'guest';
 
   // Get the hash of localUserId from server once and check for admin key
   useEffect(() => {
     const checkAdminAndGetHash = async () => {
-      if (supabase) {
+      if (supabase && user?.id) {
         // Check for admin key in localStorage
         const adminKey = localStorage.getItem('aether-admin-key');
         if (adminKey === 'AETHER_ADMIN_2024') {
           setIsAdmin(true);
         }
 
-        const { data, error } = await supabase.rpc('get_user_id_hash', { u_id: localUserId });
+        const { data, error } = await supabase.rpc('get_user_id_hash', { u_id: user.id });
         if (!error && data) {
           setLocalUserIdHash(data);
         }
@@ -57,7 +52,7 @@ export default function Guestbook() {
     };
     window.addEventListener('adminStatusChanged', handleAdminChange);
     return () => window.removeEventListener('adminStatusChanged', handleAdminChange);
-  }, [localUserId]);
+  }, [user?.id]);
 
   useEffect(() => {
     fetchMessages();
@@ -105,7 +100,7 @@ export default function Guestbook() {
         supabase.removeChannel(channel);
       }
     };
-  }, [localUserId]); // Add localUserId as dependency for the realtime check
+  }, [localUserId, localUserIdHash]); // Add localUserIdHash as dependency
 
   const fetchMessages = async () => {
     if (!supabase) {
@@ -151,17 +146,10 @@ export default function Guestbook() {
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newMessage.trim() || isSending) return;
+    if (!newMessage.trim() || isSending || !user) return;
 
-    const currentNickname = localStorage.getItem('aether-nickname') || 'Guest';
-    
-    if (currentNickname === 'Guest') {
-      setShowNicknameWarning(true);
-      setTimeout(() => setShowNicknameWarning(false), 3000);
-      return;
-    }
-
-    const currentAvatar = localStorage.getItem('aether-avatar') || 'https://picsum.photos/seed/aether-user/100/100';
+    const currentNickname = user.nickname || 'Guest';
+    const currentAvatar = user.avatar || 'https://picsum.photos/seed/aether-user/100/100';
     const textToSend = newMessage.trim();
     
     setIsSending(true);
@@ -170,7 +158,7 @@ export default function Guestbook() {
 
     try {
       if (!supabase) {
-        throw new Error('Supabase configuration missing. If this is on Vercel, please add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to Environment Variables.');
+        throw new Error('Supabase configuration missing.');
       }
       const { error } = await supabase
         .from('messages')
@@ -179,7 +167,7 @@ export default function Guestbook() {
             text: textToSend, 
             nickname: currentNickname, 
             avatar_url: currentAvatar,
-            user_id: localUserId
+            user_id: user.id
           }
         ]);
 

@@ -15,11 +15,14 @@ import Acoustic from './pages/Acoustic';
 import Ecosystem from './pages/Ecosystem';
 import DesignBrief from './pages/DesignBrief';
 import Guestbook from './pages/Guestbook';
+import Login from './pages/Login';
+import LoginGate from './components/LoginGate';
 
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<Layout />}>
+      <Route path="/login" element={<Login />} />
+      <Route path="/" element={<LoginGate><Layout /></LoginGate>}>
         <Route index element={<Home />} />
         <Route path="mechanical" element={<Mechanical />} />
         <Route path="power" element={<PowerCore />} />
