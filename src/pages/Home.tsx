@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion } from 'motion/react';
-import { ArrowRight, Car, RefreshCw, Layers, Headphones, Cog } from 'lucide-react';
+import { ArrowRight, Car, RefreshCw, Layers, Headphones, Cog, MessageSquare } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { cn } from '@/src/lib/utils';
 import heroBg from '../assets/hero-bg.jpg';
@@ -13,6 +13,15 @@ import frame225 from '../assets/360/225.jpg';
 import frame270 from '../assets/360/270.jpg';
 import frame315 from '../assets/360/315.jpg';
 import { useTranslation } from 'react-i18next';
+import { supabase } from '../lib/supabase';
+
+interface Message {
+  id: string;
+  text: string;
+  nickname: string;
+  avatarUrl: string;
+  timestamp: number;
+}
 
 const modules = [
   {
@@ -68,6 +77,7 @@ export default function Home() {
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [hasNewMessage, setHasNewMessage] = useState(false);
+  const [latestMessages, setLatestMessages] = useState<Message[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   
   // Frame interpolation logic
@@ -128,19 +138,46 @@ export default function Home() {
   }, [isDragging, handlePointerMove, handlePointerUp]);
 
   useEffect(() => {
-    const handleStorageChange = () => {
-      // 检查 Supabase 是否有数据或者收到自定义事件
-      const checkMessageState = async () => {
-        setHasNewMessage(true);
-      };
-      checkMessageState();
+    const fetchLatestMessages = async () => {
+      if (!supabase) return;
+      try {
+        const { data, error } = await supabase
+          .from('v_messages')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(3);
+
+        if (error) throw error;
+        if (data) {
+          setLatestMessages(data.map(msg => ({
+            id: msg.id,
+            text: msg.text,
+            nickname: msg.nickname,
+            avatarUrl: msg.avatar_url,
+            timestamp: new Date(msg.created_at).getTime()
+          })));
+        }
+      } catch (err) {
+        console.error('Error fetching latest messages:', err);
+      }
     };
 
-    // 监听自定义事件（在同一个标签页内触发）
-    window.addEventListener('newMessagePosted', handleStorageChange);
+    fetchLatestMessages();
+
+    // Realtime subscription for home page to show sync status
+    let channel: any = null;
+    if (supabase) {
+      channel = supabase
+        .channel('public:messages_home')
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, () => {
+          setHasNewMessage(true);
+          fetchLatestMessages();
+        })
+        .subscribe();
+    }
 
     return () => {
-      window.removeEventListener('newMessagePosted', handleStorageChange);
+      if (supabase && channel) supabase.removeChannel(channel);
     };
   }, []);
 
@@ -441,6 +478,75 @@ export default function Home() {
             </Link>
           </motion.div>
         ))}
+      </section>
+
+      {/* Latest Messages Section */}
+      <section className="px-6 md:px-24 pb-24">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="glass-panel p-8 md:p-12 rounded-[2rem] border-white/5"
+        >
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
+            <div className="flex items-center gap-4">
+              <div className="p-3 rounded-2xl bg-primary/10 text-primary">
+                <MessageSquare className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="font-headline text-2xl font-bold text-white tracking-widest uppercase">
+                  {t('访客动态', '访客动态')}
+                </h3>
+                <p className="text-primary font-headline tracking-[0.2em] text-[10px] uppercase mt-1">
+                  Latest Insights from the Community
+                </p>
+              </div>
+            </div>
+            <Link 
+              to="/guestbook" 
+              className="flex items-center gap-2 text-primary font-headline text-xs tracking-widest uppercase hover:gap-4 transition-all group"
+            >
+              {t('查看全部留言', '查看全部留言')} <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {latestMessages.length === 0 ? (
+              <div className="col-span-full py-12 flex flex-col items-center justify-center text-white/20 border border-dashed border-white/5 rounded-2xl">
+                <MessageSquare className="w-8 h-8 mb-3 opacity-10" />
+                <p className="font-headline text-[10px] tracking-widest uppercase">{t('尚无访客足迹', '尚无访客足迹')}</p>
+              </div>
+            ) : (
+              latestMessages.map((msg, i) => (
+                <motion.div
+                  key={msg.id}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  className="p-6 bg-white/5 rounded-2xl border border-white/5 hover:bg-white/10 transition-colors flex flex-col h-full"
+                >
+                  <div className="flex items-center gap-3 mb-4">
+                    <img 
+                      src={msg.avatarUrl} 
+                      alt={msg.nickname} 
+                      className="w-8 h-8 rounded-full border border-white/10 object-cover" 
+                    />
+                    <div className="flex flex-col">
+                      <span className="font-headline text-xs text-primary font-bold">{msg.nickname}</span>
+                      <span className="text-[9px] text-white/30 uppercase tracking-tighter">
+                        {new Date(msg.timestamp).toLocaleDateString()}
+                      </span>
+                    </div>
+                  </div>
+                  <p className="text-sm text-white/70 font-light leading-relaxed line-clamp-3 mb-4 flex-grow italic">
+                    "{msg.text}"
+                  </p>
+                </motion.div>
+              ))
+            )}
+          </div>
+        </motion.div>
       </section>
 
       {/* Stats Section */}

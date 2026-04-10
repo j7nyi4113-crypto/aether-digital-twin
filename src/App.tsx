@@ -14,6 +14,7 @@ import Surface from './pages/Surface';
 import Acoustic from './pages/Acoustic';
 import Ecosystem from './pages/Ecosystem';
 import DesignBrief from './pages/DesignBrief';
+import Guestbook from './pages/Guestbook';
 
 export default function App() {
   return (
@@ -28,6 +29,7 @@ export default function App() {
         <Route path="acoustic" element={<Acoustic />} />
         <Route path="ecosystem" element={<Ecosystem />} />
         <Route path="design-brief" element={<DesignBrief />} />
+        <Route path="guestbook" element={<Guestbook />} />
       </Route>
     </Routes>
   );

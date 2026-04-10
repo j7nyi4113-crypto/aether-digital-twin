@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Activity, Zap, Wind, Scale, Layers, Sun, CloudSun, Moon, Settings, Cpu, Headphones, BookOpen } from 'lucide-react';
+import { Activity, Zap, Wind, Scale, Layers, Sun, CloudSun, Moon, Settings, Cpu, Headphones, BookOpen, MessageSquare } from 'lucide-react';
 import { cn } from '@/src/lib/utils';
 import { useTranslation } from 'react-i18next';
 
@@ -16,6 +16,8 @@ export default function Sidebar() {
   const isSurface = location.pathname === '/surface';
   const isAcoustic = location.pathname === '/acoustic';
   const isEcosystem = location.pathname === '/ecosystem';
+  const isGuestbook = location.pathname === '/guestbook';
+  const isDesignBrief = location.pathname === '/design-brief';
 
   return (
     <aside className="fixed left-0 top-24 bottom-24 w-20 rounded-r-3xl border-r border-white/10 bg-[#0f1419]/40 backdrop-blur-2xl flex flex-col items-center py-8 gap-8 z-40 shadow-[20px_0_40px_rgba(194,224,255,0.03)]">
@@ -103,11 +105,20 @@ export default function Sidebar() {
         </>
       )}
 
-      <div className="mt-auto">
+      <div className="mt-auto flex flex-col gap-4">
+        <SidebarButton 
+          icon={MessageSquare} 
+          label={t("访客留言")} 
+          active={isGuestbook}
+          onClick={() => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            setTimeout(() => navigate('/guestbook'), 300);
+          }}
+        />
         <SidebarButton 
           icon={BookOpen} 
           label={t("设计纲要")} 
-          active={location.pathname === '/design-brief'}
+          active={isDesignBrief}
           onClick={() => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
             setTimeout(() => navigate('/design-brief'), 300);

@@ -29,6 +29,9 @@ export default function Navbar() {
   });
   const [isEditingNickname, setIsEditingNickname] = useState(false);
   const [tempNickname, setTempNickname] = useState('');
+  const [adminKey, setAdminKey] = useState(() => {
+    return localStorage.getItem('aether-admin-key') || '';
+  });
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleAvatarClick = () => {
@@ -64,6 +67,13 @@ export default function Navbar() {
       localStorage.setItem('aether-nickname', tempNickname.trim());
     }
     setIsEditingNickname(false);
+  };
+
+  const handleAdminKeyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setAdminKey(val);
+    localStorage.setItem('aether-admin-key', val);
+    window.dispatchEvent(new Event('adminStatusChanged'));
   };
 
   useEffect(() => {
@@ -238,6 +248,24 @@ export default function Navbar() {
                         {t('AETHER 探索者')}
                       </div>
                     )}
+
+                    <div className="mt-6 w-full pt-6 border-t border-white/5">
+                      <div className="text-[10px] text-white/30 font-headline uppercase tracking-widest mb-2 px-1">
+                        {t('管理员模式', 'Admin Access')}
+                      </div>
+                      <input 
+                        type="password"
+                        placeholder={t('输入密钥...', 'Enter Secret...')}
+                        value={adminKey}
+                        onChange={handleAdminKeyChange}
+                        className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white placeholder:text-white/20 focus:outline-none focus:border-primary/30 transition-all"
+                      />
+                      {adminKey === 'AETHER_ADMIN_2024' && (
+                        <div className="mt-2 text-[9px] text-primary font-headline uppercase tracking-widest text-center animate-pulse">
+                          {t('管理员权限已激活', 'Admin Privileges Active')}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </motion.div>
               )}

@@ -1,26 +1,15 @@
 import { motion } from 'motion/react';
 import { useTranslation } from 'react-i18next';
-import { BookOpen, Github, MessageCircle, Phone, Terminal, Send, MessageSquare, Trash2, AlertCircle } from 'lucide-react';
+import { BookOpen, Github, MessageCircle, Phone, Terminal, Send, MessageSquare, Trash2, AlertCircle, ArrowRight } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import visionaryAvatar from '../assets/visionary-avatar.jpg';
 import { supabase } from '../lib/supabase';
 
-interface Message {
-  id: string;
-  text: string;
-  nickname: string;
-  avatarUrl: string;
-  timestamp: number;
-  userId: string;
-}
-
 export default function DesignBrief() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [showPerspective, setShowPerspective] = useState(false);
-  const [newMessage, setNewMessage] = useState('');
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [showNicknameWarning, setShowNicknameWarning] = useState(false);
   
   const [localUserId] = useState(() => {
     let id = localStorage.getItem('aether-user-id');
@@ -32,153 +21,8 @@ export default function DesignBrief() {
   });
 
   useEffect(() => {
-    fetchMessages();
-
-    // Subscribe to new messages if supabase is available
-    let channel: any = null;
-    if (supabase) {
-      channel = supabase
-        .channel('public:messages')
-        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, (payload) => {
-          const newMsg: Message = {
-            id: payload.new.id,
-            text: payload.new.text,
-            nickname: payload.new.nickname,
-            avatarUrl: payload.new.avatar_url,
-            timestamp: new Date(payload.new.created_at).getTime(),
-            userId: payload.new.user_id || 'anonymous'
-          };
-          setMessages((current) => [newMsg, ...current]);
-        })
-        .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'messages' }, (payload) => {
-          setMessages((current) => current.filter(msg => msg.id !== payload.old.id));
-        })
-        .subscribe();
-    }
-
-    return () => {
-      if (supabase && channel) {
-        supabase.removeChannel(channel);
-      }
-    };
+    // Designer Perspective logic
   }, []);
-
-  const fetchMessages = async () => {
-    if (!supabase) {
-      setIsLoading(false);
-      setMessages([
-        {
-          id: '1',
-          text: 'Supabase not configured. This is a fallback message.',
-          nickname: 'System',
-          avatarUrl: 'https://picsum.photos/seed/system/100/100',
-          timestamp: Date.now(),
-          userId: 'system'
-        }
-      ]);
-      return;
-    }
-    try {
-      const { data, error } = await supabase
-        .from('messages')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-
-      if (data) {
-        const formattedMessages: Message[] = data.map(msg => ({
-          id: msg.id,
-          text: msg.text,
-          nickname: msg.nickname,
-          avatarUrl: msg.avatar_url,
-          timestamp: new Date(msg.created_at).getTime(),
-          userId: msg.user_id || 'anonymous'
-        }));
-        setMessages(formattedMessages);
-      }
-    } catch (error) {
-      console.error('Error fetching messages:', error);
-      // Fallback if table doesn't exist yet
-      setMessages([
-        {
-          id: '1',
-          text: '科技与美学的完美融合，期待完整的数字沉浸体验！',
-          nickname: 'Cyber_Walker',
-          avatarUrl: 'https://picsum.photos/seed/cyber/100/100',
-          timestamp: Date.now() - 86400000,
-          userId: 'anonymous'
-        }
-      ]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleSendMessage = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newMessage.trim()) return;
-
-    const currentNickname = localStorage.getItem('aether-nickname') || 'Guest';
-    
-    // Check if the user is still using the default 'Guest' nickname
-    if (currentNickname === 'Guest') {
-      setShowNicknameWarning(true);
-      // Optional: Auto-hide warning after 3 seconds
-      setTimeout(() => setShowNicknameWarning(false), 3000);
-      return;
-    }
-
-    const currentAvatar = localStorage.getItem('aether-avatar') || 'https://picsum.photos/seed/aether-user/100/100';
-    const textToSend = newMessage.trim();
-    setNewMessage(''); // Clear immediately for UX
-    setShowNicknameWarning(false); // Hide warning if it was showing
-
-    try {
-      if (!supabase) throw new Error('Supabase client not initialized');
-      const { error } = await supabase
-        .from('messages')
-        .insert([
-          { 
-            text: textToSend, 
-            nickname: currentNickname, 
-            avatar_url: currentAvatar,
-            user_id: localUserId
-          }
-        ]);
-
-      if (error) throw error;
-      // Note: We don't manually add to state here because the realtime subscription will catch it
-      // and update the state automatically. If realtime fails, we could fallback to manual.
-
-      // Dispatch custom event to notify Home page
-      window.dispatchEvent(new Event('newMessagePosted'));
-    } catch (error) {
-      console.error('Error sending message:', error);
-      // Revert if failed
-      setNewMessage(textToSend);
-      alert('Failed to send message. Please make sure the database table is created.');
-    }
-  };
-
-  const handleDeleteMessage = async (messageId: string) => {
-    try {
-      if (!supabase) throw new Error('Supabase client not initialized');
-      const { error } = await supabase
-        .from('messages')
-        .delete()
-        .eq('id', messageId)
-        .eq('user_id', localUserId); // Extra security check
-
-      if (error) throw error;
-      
-      // Update UI immediately for better UX, though realtime will also catch it
-      setMessages(current => current.filter(m => m.id !== messageId));
-    } catch (error) {
-      console.error('Error deleting message:', error);
-      alert('Failed to delete message.');
-    }
-  };
 
   return (
     <div className="relative min-h-screen pt-24 pl-24 pr-12 pb-24 flex flex-col items-center">
@@ -421,94 +265,30 @@ export default function DesignBrief() {
         </svg>
       </div>
 
-      {/* Message Board Section */}
+      {/* Link to Guestbook */}
       <motion.div 
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8 }}
-        className="w-full max-w-4xl mt-12 mb-12 glass-panel p-8 md:p-12 rounded-[3rem] border-white/5"
+        className="w-full max-w-4xl mt-12 mb-12 glass-panel p-12 rounded-[3rem] border-white/5 flex flex-col items-center text-center"
       >
-        <div className="flex items-center gap-3 mb-8">
-          <MessageSquare className="w-6 h-6 text-tertiary" />
-          <h3 className="font-headline text-xl text-white tracking-widest uppercase">
-            {t('Visitor Log')}
-          </h3>
-        </div>
-
-        {/* Message Input */}
-        <form onSubmit={handleSendMessage} className="mb-12 relative">
-          <div className="relative">
-            <textarea
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              placeholder={t('留下你的思考...')}
-              className={`w-full bg-white/5 border ${showNicknameWarning ? 'border-red-500/50' : 'border-white/10'} rounded-2xl p-6 text-white placeholder:text-white/30 focus:outline-none focus:border-tertiary/50 transition-colors resize-none h-32 font-light text-sm`}
-              maxLength={500}
-            />
-            <button
-              type="submit"
-              disabled={!newMessage.trim()}
-              className="absolute bottom-4 right-4 p-3 bg-tertiary/20 text-tertiary hover:bg-tertiary hover:text-black rounded-xl transition-all disabled:opacity-50 disabled:hover:bg-tertiary/20 disabled:hover:text-tertiary cursor-pointer"
-            >
-              <Send className="w-5 h-5" />
-            </button>
-          </div>
-          
-          {/* Nickname Warning Message */}
-          <motion.div 
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: showNicknameWarning ? 1 : 0, height: showNicknameWarning ? 'auto' : 0 }}
-            className="overflow-hidden mt-3"
-          >
-            <div className="flex items-center gap-2 text-red-400 font-headline text-xs tracking-widest uppercase bg-red-500/10 p-3 rounded-xl border border-red-500/20">
-              <AlertCircle className="w-4 h-4" />
-              {t('需要先在右上角个人主页修改昵称后才能留言')}
-            </div>
-          </motion.div>
-        </form>
-
-        {/* Messages List */}
-        <div className="space-y-4">
-          {messages.map((msg) => (
-            <motion.div
-              key={msg.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="flex gap-4 p-6 bg-white/5 rounded-2xl border border-white/5 hover:bg-white/10 transition-colors"
-            >
-              <img 
-                src={msg.avatarUrl} 
-                alt={msg.nickname} 
-                className="w-12 h-12 rounded-full object-cover shrink-0 border border-white/10" 
-              />
-              <div className="flex-1">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-3">
-                    <span className="font-headline text-sm text-primary tracking-wide">
-                      {msg.nickname}
-                    </span>
-                    <span className="font-headline text-[10px] tracking-widest text-white/40 uppercase">
-                      {new Date(msg.timestamp).toLocaleString()}
-                    </span>
-                  </div>
-                  {msg.userId === localUserId && (
-                    <button
-                      onClick={() => handleDeleteMessage(msg.id)}
-                      className="p-1.5 text-white/20 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-colors cursor-pointer"
-                      title={t('删除留言')}
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  )}
-                </div>
-                <p className="text-sm text-white/80 font-light leading-relaxed whitespace-pre-wrap break-words">
-                  {msg.text}
-                </p>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+        <MessageSquare className="w-12 h-12 text-tertiary mb-6" />
+        <h3 className="font-headline text-2xl text-white tracking-widest uppercase mb-4">
+          {t('与设计者对话', '与设计者对话')}
+        </h3>
+        <p className="text-on-surface-variant font-light mb-8 max-w-lg">
+          {t('对 AETHER 灵境系列有任何想法或建议？欢迎在访客留言板留下你的数字化足迹。', '对 AETHER 灵境系列有任何想法或建议？欢迎在访客留言板留下你的数字化足迹。')}
+        </p>
+        <button 
+          onClick={() => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            setTimeout(() => navigate('/guestbook'), 300);
+          }}
+          className="flex items-center gap-3 px-8 py-4 bg-tertiary/20 text-tertiary hover:bg-tertiary hover:text-black rounded-xl transition-all font-headline tracking-widest text-sm uppercase group cursor-pointer"
+        >
+          {t('前往留言板', '前往留言板')} <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />
+        </button>
       </motion.div>
 
       {/* Designer Perspective Floating Button & Overlay */}
