@@ -58,7 +58,7 @@ export default function Footer() {
     <>
       <footer className="fixed bottom-0 w-full flex flex-col md:flex-row justify-between items-center px-6 md:px-12 py-6 bg-transparent z-40 pointer-events-none gap-4 md:gap-0">
         <div className="font-headline text-[10px] tracking-widest text-primary/40 uppercase text-center md:text-left">
-          © 2024 AETHER DIGITAL TWIN. ALL RIGHTS RESERVED.
+          © 2026 AETHER DIGITAL TWIN. ALL RIGHTS RESERVED.
         </div>
         <nav className="flex gap-4 md:gap-8 font-headline text-[10px] tracking-widest pointer-events-auto">
           <a 
