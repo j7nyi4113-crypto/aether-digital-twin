@@ -34,31 +34,50 @@ export default function DesignBrief() {
   useEffect(() => {
     fetchMessages();
 
-    // Subscribe to new messages
-    const channel = supabase
-      .channel('public:messages')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, (payload) => {
-        const newMsg: Message = {
-          id: payload.new.id,
-          text: payload.new.text,
-          nickname: payload.new.nickname,
-          avatarUrl: payload.new.avatar_url,
-          timestamp: new Date(payload.new.created_at).getTime(),
-          userId: payload.new.user_id || 'anonymous'
-        };
-        setMessages((current) => [newMsg, ...current]);
-      })
-      .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'messages' }, (payload) => {
-        setMessages((current) => current.filter(msg => msg.id !== payload.old.id));
-      })
-      .subscribe();
+    // Subscribe to new messages if supabase is available
+    let channel: any = null;
+    if (supabase) {
+      channel = supabase
+        .channel('public:messages')
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, (payload) => {
+          const newMsg: Message = {
+            id: payload.new.id,
+            text: payload.new.text,
+            nickname: payload.new.nickname,
+            avatarUrl: payload.new.avatar_url,
+            timestamp: new Date(payload.new.created_at).getTime(),
+            userId: payload.new.user_id || 'anonymous'
+          };
+          setMessages((current) => [newMsg, ...current]);
+        })
+        .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'messages' }, (payload) => {
+          setMessages((current) => current.filter(msg => msg.id !== payload.old.id));
+        })
+        .subscribe();
+    }
 
     return () => {
-      supabase.removeChannel(channel);
+      if (supabase && channel) {
+        supabase.removeChannel(channel);
+      }
     };
   }, []);
 
   const fetchMessages = async () => {
+    if (!supabase) {
+      setIsLoading(false);
+      setMessages([
+        {
+          id: '1',
+          text: 'Supabase not configured. This is a fallback message.',
+          nickname: 'System',
+          avatarUrl: 'https://picsum.photos/seed/system/100/100',
+          timestamp: Date.now(),
+          userId: 'system'
+        }
+      ]);
+      return;
+    }
     try {
       const { data, error } = await supabase
         .from('messages')
@@ -116,6 +135,7 @@ export default function DesignBrief() {
     setShowNicknameWarning(false); // Hide warning if it was showing
 
     try {
+      if (!supabase) throw new Error('Supabase client not initialized');
       const { error } = await supabase
         .from('messages')
         .insert([
@@ -143,6 +163,7 @@ export default function DesignBrief() {
 
   const handleDeleteMessage = async (messageId: string) => {
     try {
+      if (!supabase) throw new Error('Supabase client not initialized');
       const { error } = await supabase
         .from('messages')
         .delete()
