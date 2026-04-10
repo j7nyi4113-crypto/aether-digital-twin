@@ -31,8 +31,8 @@ const modules = [
   },
   {
     id: '03',
-    title: '声场模拟',
-    subtitle: 'Acoustic Simulation',
+    title: '空间声场',
+    subtitle: 'Acoustic Field',
     description: '3D全景声场渲染与物理引擎模拟，在数字空间感受引擎与风阻的嘶吼。',
     path: '/acoustic',
     icon: Headphones,
@@ -47,10 +47,11 @@ export default function CoreEvolution() {
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
-    const isMobile = window.innerWidth < 768;
-    const splitDistance = isMobile ? 0 : 380; // Mobile doesn't split horizontally, or maybe just a little?
-    
-    const ctx = gsap.context(() => {
+    const mm = gsap.matchMedia();
+
+    mm.add("(min-width: 768px)", () => {
+      const splitDistance = 380;
+      
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
@@ -63,23 +64,13 @@ export default function CoreEvolution() {
       });
 
       // Phase 1: Splitting (裂变阶段)
-      if (isMobile) {
-        tl.to(cardsRef.current, {
-          y: (i) => (i - 1) * 150,
-          scale: (i) => i === 1 ? 1 : 0.85,
-          rotateZ: (i) => (i - 1) * 5, // Slight tilt
-          duration: 1,
-          ease: 'power2.inOut',
-        });
-      } else {
-        tl.to(cardsRef.current, {
-          x: (i) => (i - 1) * splitDistance,
-          rotateZ: (i) => (i - 1) * 5, // Slight tilt during split
-          scale: 1,
-          duration: 1,
-          ease: 'power2.inOut',
-        });
-      }
+      tl.to(cardsRef.current, {
+        x: (i) => (i - 1) * splitDistance,
+        rotateZ: (i) => (i - 1) * 5, // Slight tilt during split
+        scale: 1,
+        duration: 1,
+        ease: 'power2.inOut',
+      });
 
       // Phase 2: Flipping (翻转阶段)
       tl.to(cardsRef.current, {
@@ -89,37 +80,38 @@ export default function CoreEvolution() {
         stagger: 0.1,
         ease: 'back.out(1.2)',
       }, '+=0.2');
+    });
 
-    }, sectionRef);
-
-    return () => ctx.revert();
+    return () => mm.revert();
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative w-full min-h-screen bg-background py-32 flex flex-col items-center justify-center">
+    <section ref={sectionRef} className="relative w-full min-h-screen bg-background py-24 md:py-32 flex flex-col items-center justify-center overflow-hidden">
       {/* Title Header */}
-      <div className="absolute top-24 left-1/2 -translate-x-1/2 text-center z-10">
-        <h2 className="font-headline text-4xl md:text-5xl font-bold text-white tracking-[0.4em] mb-4">
+      <div className="relative md:absolute top-0 md:top-24 left-0 md:left-1/2 md:-translate-x-1/2 text-center z-10 mb-16 md:mb-0 px-6">
+        <h2 className="font-headline text-3xl md:text-5xl font-bold text-white tracking-[0.2em] md:tracking-[0.4em] mb-4">
           CORE EVOLUTION
         </h2>
-        <p className="text-primary font-headline tracking-[0.2em] text-xs uppercase opacity-60">
+        <p className="text-primary font-headline tracking-[0.2em] text-[10px] md:text-xs uppercase opacity-60">
           AETHER DIGITAL TWIN ECOSYSTEM
         </p>
       </div>
 
-      <div className="relative w-full max-w-7xl h-[500px] perspective-2000 flex items-center justify-center">
+      <div className="relative w-full max-w-7xl h-auto md:h-[500px] perspective-2000 flex flex-col md:flex-row items-center justify-center gap-12 md:gap-0 px-6 md:px-0">
         {modules.map((module, idx) => (
           <div
             key={module.id}
             ref={(el) => (cardsRef.current[idx] = el)}
-            className="absolute w-[340px] h-[480px] preserve-3d cursor-pointer"
+            className="relative md:absolute w-full max-w-[340px] h-[480px] preserve-3d cursor-pointer"
             style={{ zIndex: 10 - Math.abs(idx - 1) }}
           >
             {/* Card Inner Wrapper */}
             <div className="relative w-full h-full preserve-3d shadow-[0_30px_60px_rgba(0,0,0,0.5)] rounded-[2.5rem]">
               
-              {/* FRONT: Unified Cover Part */}
-              <div className="absolute inset-0 backface-hidden rounded-[2.5rem] border border-white/10 bg-[#161b22] overflow-hidden group">
+              {/* FRONT: Unified Cover Part - Hidden on mobile, or just show the back? */}
+              {/* Let's show the back content directly on mobile by adding rotate-y-180 class to the parent or similar */}
+              <div className="absolute inset-0 backface-hidden rounded-[2.5rem] border border-white/10 bg-[#161b22] overflow-hidden group md:block hidden">
+                {/* ... (Front content remains as is, but hidden on mobile) */}
                 {/* Background Pattern */}
                 <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,_#c2e0ff_1px,_transparent_1px)] bg-[size:24px_24px]" />
                 
@@ -153,7 +145,7 @@ export default function CoreEvolution() {
               </div>
 
               {/* BACK: Detailed Content */}
-              <div className="absolute inset-0 backface-hidden rounded-[2.5rem] border border-white/20 glass-panel rotate-y-180 flex flex-col overflow-hidden shadow-[0_0_40px_rgba(0,0,0,0.3)]">
+              <div className="absolute inset-0 backface-hidden rounded-[2.5rem] border border-white/20 glass-panel md:rotate-y-180 flex flex-col overflow-hidden shadow-[0_0_40px_rgba(0,0,0,0.3)]">
                 
                 {/* Back Image / Effect */}
                 <div className="absolute inset-0">
@@ -207,7 +199,7 @@ export default function CoreEvolution() {
       </div>
       
       {/* Scroll Down Hint */}
-      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 opacity-40">
+      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 md:flex hidden flex-col items-center gap-4 opacity-40">
         <div className="w-px h-12 bg-gradient-to-b from-primary/0 to-primary" />
         <span className="font-headline text-[9px] tracking-[0.3em] text-white uppercase">Scroll to Evolve</span>
       </div>

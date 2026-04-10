@@ -47,8 +47,8 @@ const modules = [
   },
   {
     id: '03',
-    title: '声场模拟',
-    subtitle: 'Acoustic Simulation',
+    title: '空间声场',
+    subtitle: 'Acoustic Field',
     description: '3D全景声场渲染与物理引擎模拟，在数字空间感受引擎与风阻的嘶吼。',
     path: '/acoustic',
     icon: Headphones,

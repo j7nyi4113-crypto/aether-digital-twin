@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { QRCodeSVG } from 'qrcode.react';
-import { MessageSquare, Scan, Smartphone, LogIn, CheckCircle, ChevronRight, User, Image } from 'lucide-react';
+import { MessageSquare, Scan, Smartphone, LogIn, CheckCircle, ChevronRight, User, Image, Camera } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -14,6 +14,7 @@ export default function Login() {
   const location = useLocation();
   const [isMobile, setIsMobile] = useState(false);
   const [loginStep, setLoginStep] = useState<'scan' | 'profile' | 'success'>('scan');
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   // State for simulated profile data
   const [mockProfile, setMockProfile] = useState({
@@ -22,6 +23,21 @@ export default function Login() {
   });
 
   const from = location.state?.from?.pathname || '/';
+
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setMockProfile(prev => ({ ...prev, avatar: reader.result as string }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   useEffect(() => {
     // Detect mobile
@@ -102,8 +118,11 @@ export default function Login() {
                 <h1 className="font-headline text-2xl font-bold text-white mb-2 tracking-widest uppercase">
                   AETHER LOGIN
                 </h1>
-                <p className="text-on-surface-variant text-sm font-light mb-10 tracking-wide">
+                <p className="text-on-surface-variant text-sm font-light mb-2 tracking-wide">
                   {isMobile ? '请通过微信登录以进入 AETHER 空间' : '使用微信扫码，开启数字化孪生之旅'}
+                </p>
+                <p className="text-red-500 text-sm font-bold mb-10 animate-pulse">
+                  本网站暂未接入微信！无需扫码！
                 </p>
 
                 {isMobile ? (
@@ -157,8 +176,21 @@ export default function Login() {
                 exit={{ opacity: 0, x: -20 }}
                 className="flex flex-col items-center"
               >
-                <div className="w-24 h-24 rounded-full border-2 border-primary/30 p-1 mb-8">
-                  <img src={mockProfile.avatar} alt="Avatar" className="w-full h-full rounded-full object-cover shadow-lg" />
+                <div 
+                  className="group relative w-24 h-24 rounded-full border-2 border-primary/30 p-1 mb-8 cursor-pointer overflow-hidden transition-all hover:border-primary"
+                  onClick={handleAvatarClick}
+                >
+                  <img src={mockProfile.avatar} alt="Avatar" className="w-full h-full rounded-full object-cover shadow-lg group-hover:opacity-50 transition-opacity" />
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Camera className="w-8 h-8 text-white" />
+                  </div>
+                  <input 
+                    type="file" 
+                    ref={fileInputRef} 
+                    onChange={handleFileChange} 
+                    accept="image/*" 
+                    className="hidden" 
+                  />
                 </div>
                 
                 <h2 className="font-headline text-xl font-bold text-white mb-2 tracking-widest uppercase">
