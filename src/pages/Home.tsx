@@ -1,8 +1,17 @@
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion } from 'motion/react';
-import { ArrowRight, Car, RefreshCw, Layers, Headphones } from 'lucide-react';
+import { ArrowRight, Car, RefreshCw, Layers, Headphones, Cog } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { cn } from '@/src/lib/utils';
 import heroBg from '../assets/hero-bg.jpg';
+import frame0 from '../assets/360/0.jpg';
+import frame45 from '../assets/360/45.jpg';
+import frame90 from '../assets/360/90.jpg';
+import frame135 from '../assets/360/135.jpg';
+import frame180 from '../assets/360/180.jpg';
+import frame225 from '../assets/360/225.jpg';
+import frame270 from '../assets/360/270.jpg';
+import frame315 from '../assets/360/315.jpg';
 import { useTranslation } from 'react-i18next';
 
 const modules = [
@@ -38,9 +47,102 @@ const modules = [
   }
 ];
 
+// 模拟 8 个关键帧图片的路径 (0, 45, 90, 135, 180, 225, 270, 315)
+const CAR_FRAMES = [
+  frame0,
+  frame45,
+  frame90,
+  frame135,
+  frame180,
+  frame225,
+  frame270,
+  frame315,
+];
+
 export default function Home() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+
+  // 360 Viewer State
+  const [rotation, setRotation] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [hasNewMessage, setHasNewMessage] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  
+  // Frame interpolation logic
+  const TOTAL_FRAMES = CAR_FRAMES.length;
+  const DEGREES_PER_FRAME = 360 / TOTAL_FRAMES; // 45 degrees
+
+  // Calculate current frame and next frame for interpolation
+  const currentAngle = ((rotation % 360) + 360) % 360;
+  const exactFrameIndex = currentAngle / DEGREES_PER_FRAME;
+  const frame1Index = Math.floor(exactFrameIndex) % TOTAL_FRAMES;
+  const frame2Index = (frame1Index + 1) % TOTAL_FRAMES;
+  
+  // Progress between the two frames (0 to 1)
+  const interpolationProgress = exactFrameIndex - Math.floor(exactFrameIndex);
+
+  const handlePointerDown = (e: React.PointerEvent | React.TouchEvent) => {
+    setIsDragging(true);
+    if ('touches' in e) {
+      setStartX(e.touches[0].clientX);
+    } else {
+      setStartX((e as React.PointerEvent).clientX);
+    }
+  };
+
+  const handlePointerMove = useCallback((e: PointerEvent | TouchEvent) => {
+    if (!isDragging) return;
+    
+    let currentX = 0;
+    if ('touches' in e) {
+      currentX = e.touches[0].clientX;
+    } else {
+      currentX = (e as PointerEvent).clientX;
+    }
+
+    const deltaX = currentX - startX;
+    // Adjust sensitivity: 1 pixel drag = 0.5 degree rotation
+    setRotation(prev => prev + deltaX * 0.5);
+    setStartX(currentX);
+  }, [isDragging, startX]);
+
+  const handlePointerUp = useCallback(() => {
+    setIsDragging(false);
+  }, []);
+
+  useEffect(() => {
+    if (isDragging) {
+      window.addEventListener('pointermove', handlePointerMove);
+      window.addEventListener('pointerup', handlePointerUp);
+      window.addEventListener('touchmove', handlePointerMove, { passive: false });
+      window.addEventListener('touchend', handlePointerUp);
+    }
+    return () => {
+      window.removeEventListener('pointermove', handlePointerMove);
+      window.removeEventListener('pointerup', handlePointerUp);
+      window.removeEventListener('touchmove', handlePointerMove);
+      window.removeEventListener('touchend', handlePointerUp);
+    };
+  }, [isDragging, handlePointerMove, handlePointerUp]);
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      // 检查 Supabase 是否有数据或者收到自定义事件
+      const checkMessageState = async () => {
+        setHasNewMessage(true);
+      };
+      checkMessageState();
+    };
+
+    // 监听自定义事件（在同一个标签页内触发）
+    window.addEventListener('newMessagePosted', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('newMessagePosted', handleStorageChange);
+    };
+  }, []);
 
   const handleStartEvolve = () => {
     // Scroll to top to ensure smooth transition to next page
@@ -59,9 +161,9 @@ export default function Home() {
   };
 
   return (
-    <div className="relative min-h-screen pt-20">
+    <div className="relative min-h-screen pt-20 overflow-x-hidden">
       {/* Hero Section */}
-      <section className="relative h-[80vh] flex items-center px-12 md:px-24 overflow-hidden">
+      <section className="relative h-[80vh] flex items-center px-6 md:px-24 overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img
             src={heroBg}
@@ -116,36 +218,110 @@ export default function Home() {
         >
           <div className="flex justify-between items-center mb-6">
             <div className="font-headline text-[10px] tracking-widest text-secondary uppercase">{t('Core Status')}</div>
-            <Car className="text-tertiary w-5 h-5" />
+            <Car className={cn("w-5 h-5 transition-colors duration-1000", hasNewMessage ? "text-primary" : "text-white/20")} id="core-status-car" />
           </div>
           <div className="space-y-4">
             <div className="flex justify-between items-end">
               <span className="text-[10px] uppercase text-on-surface-variant">{t('Sync Rate')}</span>
-              <span className="font-headline text-lg text-primary">98.4%</span>
+              <span className={cn("font-headline text-lg transition-all duration-1000", hasNewMessage ? "text-primary" : "text-on-surface-variant")} id="core-status-sync">
+                {hasNewMessage ? '100%' : '0%'}
+              </span>
             </div>
-            <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: '98.4%' }}
-                transition={{ duration: 1.5, delay: 1 }}
-                className="h-full bg-tertiary shadow-[0_0_8px_rgba(128,236,255,0.6)]"
-              />
+            <div className="flex gap-1 h-1">
+              {[...Array(20)].map((_, i) => (
+                <motion.div 
+                  key={i} 
+                  initial={{ opacity: 0 }}
+                  animate={{ 
+                    opacity: 1,
+                    backgroundColor: hasNewMessage 
+                      ? (i < 18 ? '#00D2FF' : 'rgba(255,255,255,0.1)') // 18 个蓝色，2 个灰色
+                      : 'rgba(255,255,255,0.1)' // 全灰
+                  }}
+                  transition={{ duration: 0.5, delay: i * 0.05 }}
+                  className="flex-grow rounded-full shadow-[0_0_8px_rgba(0,210,255,0.4)]"
+                />
+              ))}
             </div>
             <div className="flex justify-between items-end pt-2">
               <span className="text-[10px] uppercase text-on-surface-variant">{t('Tether Link')}</span>
-              <span className="font-headline text-lg text-secondary">{t('ACTIVE')}</span>
+              <span className={cn("font-headline text-lg transition-all duration-1000", hasNewMessage ? "text-secondary" : "text-on-surface-variant")} id="core-status-link">
+                {hasNewMessage ? t('已激活') : t('ACTIVE')}
+              </span>
             </div>
           </div>
         </motion.div>
       </section>
 
       {/* Brand Introduction Section */}
-      <section className="px-12 md:px-24 py-24 md:py-32 relative z-10 max-w-5xl mx-auto text-center md:text-left">
+      <section className="px-6 md:px-24 py-24 md:py-32 relative z-10 max-w-5xl mx-auto text-center md:text-left">
+        
+        {/* 360 Degree Viewer Module */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
+          className="mb-16 md:mb-24"
+        >
+          <div className="text-center mb-8">
+            <h3 className="font-headline text-2xl md:text-3xl font-bold text-white tracking-widest mb-2">
+              AETHER 360°
+            </h3>
+            <p className="text-on-surface-variant text-sm font-light uppercase tracking-widest">
+              Drag to explore the form
+            </p>
+          </div>
+          
+          <div 
+            ref={containerRef}
+            className="relative w-full aspect-video md:aspect-[21/9] bg-black/20 rounded-[2rem] border border-white/5 overflow-hidden cursor-grab active:cursor-grabbing"
+            onPointerDown={handlePointerDown}
+            onTouchStart={handlePointerDown}
+          >
+            {/* Preload all images to prevent flickering */}
+            <div className="hidden">
+              {CAR_FRAMES.map((src, i) => (
+                <img key={i} src={src} alt="preload" />
+              ))}
+            </div>
+
+            {/* Base Frame */}
+            <img 
+              src={CAR_FRAMES[frame1Index]} 
+              className="absolute inset-0 w-full h-full object-cover transition-opacity duration-75"
+              alt="AETHER 360 View"
+              style={{ opacity: 1 - interpolationProgress }}
+            />
+            
+            {/* Next Frame Overlay for Interpolation */}
+            <img 
+              src={CAR_FRAMES[frame2Index]} 
+              className="absolute inset-0 w-full h-full object-cover transition-opacity duration-75"
+              alt="AETHER 360 View Overlay"
+              style={{ opacity: interpolationProgress }}
+            />
+
+            {/* Interactive Hints & HUD */}
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-black/50 backdrop-blur-md px-6 py-2 rounded-full border border-white/10 pointer-events-none">
+              <div className="w-1 h-1 rounded-full bg-white/50" />
+              <div className="w-1 h-1 rounded-full bg-white/50" />
+              <div className="text-xs font-headline tracking-[0.2em] text-white/80">360° VIEWER</div>
+              <div className="w-1 h-1 rounded-full bg-white/50" />
+              <div className="w-1 h-1 rounded-full bg-white/50" />
+            </div>
+
+            <div className="absolute top-6 left-6 font-headline text-[10px] text-primary tracking-[0.3em] pointer-events-none">
+              ANGLE: {Math.round(currentAngle)}°
+            </div>
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.2 }}
           className="glass-panel p-8 md:p-16 rounded-[3rem] border-white/5 relative overflow-hidden"
         >
            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[100px] -z-10" />
@@ -195,7 +371,7 @@ export default function Home() {
       </section>
 
       {/* Navigation Entry Cards */}
-      <section className="px-12 md:px-24 py-12 md:py-24 grid grid-cols-1 md:grid-cols-3 gap-8">
+      <section className="px-6 md:px-24 py-12 md:py-24 grid grid-cols-1 md:grid-cols-3 gap-8">
         {modules.map((module, idx) => (
           <motion.div
             key={module.id}
@@ -208,12 +384,46 @@ export default function Home() {
               to={module.path}
               className="group relative aspect-[4/5] block overflow-hidden rounded-3xl glass-panel transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(0,210,255,0.1)]"
             >
-              <img
-                src={module.image}
-                className="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:scale-110 transition-transform duration-700"
-                alt={module.title}
-                referrerPolicy="no-referrer"
-              />
+              {module.id === '01' ? (
+                <div className="absolute inset-0 w-full h-full opacity-40 group-hover:scale-110 transition-transform duration-700 bg-black/50 flex items-center justify-center">
+                  <div className="absolute inset-0 flex items-center justify-center opacity-80">
+                    <Cog className="absolute top-[10%] left-[-10%] w-64 h-64 text-tertiary/20 animate-[spin_12s_linear_infinite]" strokeWidth={1} />
+                    <Cog className="absolute top-[45%] left-[45%] w-48 h-48 text-secondary/30 animate-[spin_8s_linear_infinite_reverse]" strokeWidth={1.5} />
+                    <Cog className="absolute bottom-[-10%] right-[-10%] w-56 h-56 text-primary/20 animate-[spin_15s_linear_infinite]" strokeWidth={1} />
+                    <Cog className="absolute top-[20%] right-[10%] w-32 h-32 text-tertiary/40 animate-[spin_10s_linear_infinite]" strokeWidth={2} />
+                  </div>
+                </div>
+              ) : module.id === '02' ? (
+                <motion.div
+                  className="absolute inset-0 w-full h-full opacity-60 group-hover:scale-110 transition-transform duration-700"
+                  animate={{
+                    backgroundColor: [
+                      '#1A1A1A', // 曜石黑 Obsidian Black
+                      '#F5F5F5', // 珍珠白 Pearl White
+                      '#EAB308', // 赛博黄 Cyber Yellow
+                      '#8B5CF6', // 霓虹紫 Neon Purple
+                      '#3B82F6', // 量子蓝 Quantum Blue
+                      '#1A1A1A', // 循环回黑 Back to Black
+                    ]
+                  }}
+                  transition={{
+                    duration: 15,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                >
+                  {/* 模拟漆面的高光和金属光泽质感 */}
+                  <div className="absolute inset-0 bg-gradient-to-tr from-black/80 via-white/10 to-white/40 mix-blend-overlay" />
+                  <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-white/40 via-transparent to-transparent mix-blend-overlay" />
+                </motion.div>
+              ) : (
+                <img
+                  src={module.image}
+                  className="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:scale-110 transition-transform duration-700"
+                  alt={module.title}
+                  referrerPolicy="no-referrer"
+                />
+              )}
               <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
               <div className="absolute bottom-10 left-10 right-10">
                 <div className={cn("font-headline text-[10px] tracking-[0.3em] uppercase mb-2", module.color)}>
@@ -234,7 +444,7 @@ export default function Home() {
       </section>
 
       {/* Stats Section */}
-      <section className="px-12 md:px-24 pb-32">
+      <section className="px-6 md:px-24 pb-32">
         <div className="glass-panel p-12 rounded-[2rem] flex flex-col md:flex-row justify-between items-center gap-12">
           <div className="text-center">
             <div className="font-headline text-4xl font-bold text-primary mb-2">4,200+</div>

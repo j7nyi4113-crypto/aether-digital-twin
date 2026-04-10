@@ -207,7 +207,15 @@ const resources = {
       "db_footer_quote": "Good design should not provide answers, but inspire yearning. The AETHER Spirit Series is a gentle invitation we extend to human senses in the digital wave.",
       "db_visionary_label": "The Visionary",
       "db_visionary_title": "CHIEF ARCHITECT & DIGITAL ARTIST OF AETHER",
-      "db_visionary_desc": "\"In this era of pursuing parameters, he chooses to capture the breathing of technology flow. As the creator of the AETHER Spirit Series, he stitches together the rational logic of WebGL and the emotional intuition of human senses, redefining the connection between humans and future mobile spaces.\""
+      "db_visionary_desc": "\"In this era of pursuing parameters, he chooses to capture the breathing of technology flow. As the creator of the AETHER Spirit Series, he stitches together the rational logic of WebGL and the emotional intuition of human senses, redefining the connection between humans and future mobile spaces.\"",
+      "个人主页": "Profile",
+      "点击更换头像": "Change Avatar",
+      "修改昵称": "Edit Nickname",
+      "AETHER 探索者": "AETHER EXPLORER",
+      "Visitor Log": "Visitor Log",
+      "留下你的思考...": "Leave your thoughts here...",
+      "删除留言": "Delete Message",
+      "需要先在右上角个人主页修改昵称后才能留言": "Please change your nickname in the top right profile before leaving a message"
     }
   },
   zh: {
@@ -232,7 +240,7 @@ const resources = {
       "Core Status": "核心状态",
       "Sync Rate": "同步率",
       "Tether Link": "连接状态",
-      "ACTIVE": "已激活",
+      "ACTIVE": "待激活",
       "Module 01": "模块 01",
       "Module 02": "模块 02",
       "Module 03": "模块 03",
@@ -287,7 +295,7 @@ const resources = {
       "纯净电驱声场，模拟高频电磁共振。": "纯净电驱声场，模拟高频电磁共振。",
       "模拟V12引擎的数字化重组，低沉有力。": "模拟V12引擎的数字化重组，低沉有力。",
       "赛博朋克风格的合成音效，充满科技感。": "赛博朋克风格的合成音效，充满科技感。",
-      "Active": "使用中",
+      "Active": "待连接",
       "Paused": "已暂停",
       "Select": "选择",
       // Ecosystem
@@ -299,7 +307,7 @@ const resources = {
       "安全加密": "安全加密",
       "极速响应": "极速响应",
       "全球漫游": "全球漫游",
-      "Connected": "已连接",
+      "Connected": "待连接",
       "Standby": "待机",
       // Lightweight
       "扭转刚度 | STIFFNESS": "扭转刚度",
@@ -414,7 +422,15 @@ const resources = {
       "db_footer_quote": "好的设计不应该提供答案，而应该激发向往。AETHER 灵境系列是我们在数字化浪潮中，为人类感官递出的一张温柔邀请函。",
       "db_visionary_label": "远见者 | The Visionary",
       "db_visionary_title": "AETHER 首席架构师 & 灵境数字艺术家",
-      "db_visionary_desc": "“在这个追求参数的时代，他选择去捕捉科技流动的呼吸。作为 AETHER 灵境系列的创造者，他将 WebGL 的理性逻辑与人文感官的感性直觉缝合在一起，重新定义了人类与未来移动空间的连接方式。”"
+      "db_visionary_desc": "“在这个追求参数的时代，他选择去捕捉科技流动的呼吸。作为 AETHER 灵境系列的创造者，他将 WebGL 的理性逻辑与人文感官的感性直觉缝合在一起，重新定义了人类与未来移动空间的连接方式。”",
+      "个人主页": "个人主页",
+      "点击更换头像": "点击更换头像",
+      "修改昵称": "修改昵称",
+      "AETHER 探索者": "AETHER 探索者",
+      "Visitor Log": "访客留言",
+      "留下你的思考...": "留下你的思考...",
+      "删除留言": "删除留言",
+      "需要先在右上角个人主页修改昵称后才能留言": "需要先在右上角个人主页修改昵称后才能留言"
     }
   }
 };

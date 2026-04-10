@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Globe, Camera } from 'lucide-react';
+import { Globe, Camera, Edit2, Check } from 'lucide-react';
 import { cn } from '@/src/lib/utils';
 import { useTranslation } from 'react-i18next';
 import { useState, useRef, useEffect } from 'react';
@@ -17,14 +17,26 @@ export default function Navbar() {
   const location = useLocation();
   const { t, i18n } = useTranslation();
   const [isLangOpen, setIsLangOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const langRef = useRef<HTMLDivElement>(null);
+  const profileRef = useRef<HTMLDivElement>(null);
   
   const [avatarUrl, setAvatarUrl] = useState(() => {
     return localStorage.getItem('aether-avatar') || 'https://picsum.photos/seed/aether-user/100/100';
   });
+  const [nickname, setNickname] = useState(() => {
+    return localStorage.getItem('aether-nickname') || 'Guest';
+  });
+  const [isEditingNickname, setIsEditingNickname] = useState(false);
+  const [tempNickname, setTempNickname] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleAvatarClick = () => {
+    setIsProfileOpen(!isProfileOpen);
+    if (isLangOpen) setIsLangOpen(false);
+  };
+
+  const triggerFileUpload = () => {
     fileInputRef.current?.click();
   };
 
@@ -41,10 +53,27 @@ export default function Navbar() {
     }
   };
 
+  const startEditingNickname = () => {
+    setTempNickname(nickname);
+    setIsEditingNickname(true);
+  };
+
+  const saveNickname = () => {
+    if (tempNickname.trim()) {
+      setNickname(tempNickname.trim());
+      localStorage.setItem('aether-nickname', tempNickname.trim());
+    }
+    setIsEditingNickname(false);
+  };
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (langRef.current && !langRef.current.contains(event.target as Node)) {
         setIsLangOpen(false);
+      }
+      if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
+        setIsProfileOpen(false);
+        setIsEditingNickname(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -114,27 +143,105 @@ export default function Navbar() {
               )}
             </AnimatePresence>
           </div>
-          <div 
-            className="w-10 h-10 rounded-full border border-primary/20 overflow-hidden ml-2 relative group cursor-pointer"
-            onClick={handleAvatarClick}
-            title={t('点击上传头像')}
-          >
-            <img
-              src={avatarUrl}
-              alt="User"
-              className="w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-50"
-              referrerPolicy="no-referrer"
-            />
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <Camera className="w-4 h-4 text-white" />
+          <div className="relative" ref={profileRef}>
+            <div 
+              className="flex items-center gap-3 cursor-pointer group"
+              onClick={handleAvatarClick}
+              title={t('个人主页')}
+            >
+              <span className="font-headline text-xs tracking-widest uppercase text-on-surface-variant group-hover:text-primary transition-colors hidden sm:block">
+                {nickname}
+              </span>
+              <div 
+                className="w-10 h-10 rounded-full border border-primary/20 overflow-hidden relative"
+              >
+                <img
+                  src={avatarUrl}
+                  alt="User"
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
             </div>
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleFileChange}
-              accept="image/*"
-              className="hidden"
-            />
+
+            <AnimatePresence>
+              {isProfileOpen && (
+                <motion.div 
+                  initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                  transition={{ duration: 0.2, ease: "easeOut" }}
+                  className="absolute right-0 mt-4 w-64 bg-[#0f1419]/90 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden flex flex-col shadow-[0_10px_30px_rgba(0,0,0,0.5)] origin-top-right z-50 p-6"
+                >
+                  <div className="flex flex-col items-center">
+                    <div 
+                      className="w-20 h-20 rounded-full border border-primary/40 overflow-hidden relative group/avatar cursor-pointer mb-4"
+                      onClick={triggerFileUpload}
+                      title={t('点击更换头像')}
+                    >
+                      <img
+                        src={avatarUrl}
+                        alt="User"
+                        className="w-full h-full object-cover transition-opacity duration-300 group-hover/avatar:opacity-40"
+                        referrerPolicy="no-referrer"
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/avatar:opacity-100 transition-opacity duration-300">
+                        <Camera className="w-6 h-6 text-white drop-shadow-md" />
+                      </div>
+                      <input
+                        type="file"
+                        ref={fileInputRef}
+                        onChange={handleFileChange}
+                        accept="image/*"
+                        className="hidden"
+                      />
+                    </div>
+
+                    {isEditingNickname ? (
+                      <div className="flex items-center gap-2 w-full">
+                        <input 
+                          type="text" 
+                          value={tempNickname}
+                          onChange={(e) => setTempNickname(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') saveNickname();
+                            if (e.key === 'Escape') setIsEditingNickname(false);
+                          }}
+                          className="flex-1 bg-white/5 border border-primary/30 rounded-lg px-3 py-1.5 text-sm text-white font-headline focus:outline-none focus:border-primary"
+                          autoFocus
+                          maxLength={15}
+                        />
+                        <button 
+                          onClick={saveNickname}
+                          className="p-1.5 rounded-lg bg-primary/20 text-primary hover:bg-primary hover:text-black transition-colors"
+                        >
+                          <Check className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2 group/name">
+                        <span className="font-headline text-lg text-white font-bold tracking-wider">
+                          {nickname}
+                        </span>
+                        <button 
+                          onClick={startEditingNickname}
+                          className="opacity-0 group-hover/name:opacity-100 p-1 text-primary/60 hover:text-primary transition-all"
+                          title={t('修改昵称')}
+                        >
+                          <Edit2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    )}
+                    
+                    {!isEditingNickname && (
+                      <div className="text-[10px] text-on-surface-variant font-headline uppercase tracking-widest mt-1">
+                        {t('AETHER 探索者')}
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
       </div>
