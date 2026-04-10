@@ -1,6 +1,6 @@
 import { motion } from 'motion/react';
 import { useTranslation } from 'react-i18next';
-import { BookOpen, Github, MessageCircle, Phone, Terminal, Send, MessageSquare, Trash2, AlertCircle, ArrowRight } from 'lucide-react';
+import { BookOpen, Github, MessageCircle, Phone, Terminal, Send, MessageSquare, Trash2, AlertCircle, ArrowRight, Mail } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import visionaryAvatar from '../assets/visionary-avatar.jpg';
@@ -234,6 +234,21 @@ export default function DesignBrief() {
               <div className="absolute -top-12 opacity-0 group-focus-within/tooltip:opacity-100 group-hover/tooltip:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-10 flex flex-col items-center">
                 <div className="bg-black/80 backdrop-blur-md text-white font-headline tracking-wider text-[10px] px-3 py-2 rounded-lg border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
                   +86 19883179170
+                </div>
+                <div className="w-2 h-2 bg-black/80 border-b border-r border-white/10 rotate-45 -mt-1" />
+              </div>
+            </div>
+
+            <div className="relative group/tooltip flex justify-center">
+              <a 
+                href="mailto:j7nyi4113@gmail.com"
+                className="p-3 rounded-full glass-panel hover:bg-white/10 hover:text-white focus:bg-white/10 focus:text-white transition-colors text-primary/60 cursor-pointer"
+              >
+                <Mail className="w-4 h-4" />
+              </a>
+              <div className="absolute -top-12 opacity-0 group-focus-within/tooltip:opacity-100 group-hover/tooltip:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-10 flex flex-col items-center">
+                <div className="bg-black/80 backdrop-blur-md text-white font-headline tracking-wider text-[10px] px-3 py-2 rounded-lg border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+                  j7nyi4113@gmail.com
                 </div>
                 <div className="w-2 h-2 bg-black/80 border-b border-r border-white/10 rotate-45 -mt-1" />
               </div>
