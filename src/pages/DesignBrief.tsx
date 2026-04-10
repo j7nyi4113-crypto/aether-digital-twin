@@ -251,28 +251,48 @@ export default function DesignBrief() {
           viewBox="0 0 400 120" 
           className="w-72 h-32 stroke-tertiary/40 group-hover:stroke-tertiary transition-all duration-700 group-hover:drop-shadow-[0_0_15px_rgba(128,236,255,0.6)]"
           fill="none" 
-          strokeWidth="2.5" 
+          strokeWidth="1.8" 
           strokeLinecap="round" 
           strokeLinejoin="round"
         >
-          {/* Artistic "Liu" Signature Path */}
-          <motion.path 
-            initial={{ pathLength: 0, opacity: 0 }}
-            whileInView={{ pathLength: 1, opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 2.5, ease: [0.4, 0, 0.2, 1] }}
-            d="M 100,60 C 120,30 140,20 150,50 C 160,80 140,100 170,80 C 190,60 210,30 220,50 C 230,70 210,90 240,80 C 260,70 280,40 300,60 M 140,40 L 160,60 M 210,40 L 230,60"
-            className="filter drop-shadow-sm"
-          />
-          {/* Elegant underline decoration */}
+          {/* Artistic "Liu" Signature - Faithful to Image */}
+          <g transform="rotate(-5, 200, 60)">
+            {/* The 'L' */}
+            <motion.path 
+              initial={{ pathLength: 0, opacity: 0 }}
+              whileInView={{ pathLength: 1, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1.5, ease: "easeInOut" }}
+              d="M 130,45 C 110,45 150,25 180,35 C 195,40 160,85 150,90 C 140,95 190,80 215,75"
+            />
+            {/* The 'i' and 'u' connection */}
+            <motion.path 
+              initial={{ pathLength: 0, opacity: 0 }}
+              whileInView={{ pathLength: 1, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1.2, delay: 1.2, ease: "easeInOut" }}
+              d="M 215,75 C 225,70 235,60 240,75 C 245,85 265,85 275,65 C 280,55 290,75 300,75"
+            />
+            {/* The dot of 'i' */}
+            <motion.path 
+              initial={{ scale: 0, opacity: 0 }}
+              whileInView={{ scale: 1, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.3, delay: 2.2 }}
+              d="M 238,52 L 240,52"
+              strokeWidth="3"
+            />
+          </g>
+          
+          {/* Subtle elegant underline */}
           <motion.path
             initial={{ pathLength: 0, opacity: 0 }}
             whileInView={{ pathLength: 1, opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 1.5, delay: 1, ease: "easeOut" }}
-            d="M 120,95 Q 200,85 280,95"
-            strokeWidth="1"
-            className="opacity-30"
+            transition={{ duration: 1.5, delay: 2.5, ease: "easeOut" }}
+            d="M 140,105 Q 210,95 280,105"
+            strokeWidth="0.8"
+            className="opacity-20"
           />
         </svg>
       </div>
