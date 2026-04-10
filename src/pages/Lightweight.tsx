@@ -13,15 +13,15 @@ const lightSpecs = [
 export default function Lightweight() {
   const { t } = useTranslation();
   return (
-    <div className="relative min-h-screen pt-24 pl-24 pr-12 pb-24 flex flex-col">
-      <div className="flex-grow grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+    <div className="relative min-h-screen pt-24 px-6 md:pl-24 md:pr-12 pb-24 flex flex-col">
+      <div className="flex-grow grid grid-cols-1 lg:grid-cols-12 gap-12 items-center mt-12 lg:mt-0">
         {/* Left Side: Body Structure Visualization */}
-        <div className="lg:col-span-8 relative aspect-video flex items-center justify-center overflow-hidden">
+        <div className="lg:col-span-8 relative aspect-video flex flex-col items-center justify-center overflow-hidden max-w-2xl mx-auto w-full lg:max-w-none">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1 }}
-            className="relative w-full h-full"
+            className="relative w-full h-full shrink-0 md:shrink"
           >
             {/* Heatmap/Stress Visualization Style */}
             <div className="absolute inset-0 z-0 opacity-20 bg-[radial-gradient(circle_at_center,_var(--color-secondary)_0%,_transparent_70%)]" />
@@ -39,8 +39,8 @@ export default function Lightweight() {
           </motion.div>
 
           {/* Stress Analysis HUD */}
-          <div className="absolute bottom-10 left-10 space-y-4">
-            <div className="glass-panel p-6 rounded-2xl border-white/10 w-72">
+          <div className="relative md:absolute md:bottom-10 md:left-10 mt-8 md:mt-0 w-full md:w-auto flex justify-center md:block">
+            <div className="glass-panel p-6 rounded-2xl border-white/10 w-full max-w-sm md:w-72">
               <div className="font-headline text-[10px] tracking-widest text-secondary uppercase mb-4">{t('Stress Analysis')}</div>
               <div className="flex items-center gap-4 mb-4">
                 <div className="flex-grow h-2 bg-gradient-to-r from-primary via-secondary to-tertiary rounded-full" />

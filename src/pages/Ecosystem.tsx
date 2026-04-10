@@ -13,10 +13,10 @@ export default function Ecosystem() {
   const { t } = useTranslation();
 
   return (
-    <div className="relative min-h-screen pt-24 pl-24 pr-12 pb-24 flex flex-col">
-      <div className="flex-grow grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+    <div className="relative min-h-screen pt-24 px-6 md:pl-24 md:pr-12 pb-24 flex flex-col">
+      <div className="flex-grow grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mt-12 lg:mt-0">
         {/* Left: Visual Representation */}
-        <div className="relative aspect-square flex items-center justify-center">
+        <div className="relative aspect-square flex items-center justify-center max-w-lg mx-auto w-full">
           <div className="absolute inset-0 flex items-center justify-center">
             {/* Pulsing Rings */}
             <motion.div

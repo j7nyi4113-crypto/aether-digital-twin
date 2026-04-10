@@ -13,15 +13,15 @@ const coreSpecs = [
 export default function PowerCore() {
   const { t } = useTranslation();
   return (
-    <div className="relative min-h-screen pt-24 pl-24 pr-12 pb-24 flex flex-col">
-      <div className="flex-grow grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+    <div className="relative min-h-screen pt-24 px-6 md:pl-24 md:pr-12 pb-24 flex flex-col">
+      <div className="flex-grow grid grid-cols-1 lg:grid-cols-12 gap-12 items-center mt-12 lg:mt-0">
         {/* Left Side: Technical Visualization */}
-        <div className="lg:col-span-8 relative aspect-video flex items-center justify-center overflow-hidden">
+        <div className="lg:col-span-8 relative aspect-video flex flex-col items-center justify-center overflow-hidden max-w-2xl mx-auto w-full lg:max-w-none">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1 }}
-            className="relative w-full h-full"
+            className="relative w-full h-full shrink-0 md:shrink"
           >
             <img
               src="https://picsum.photos/seed/electric-motor-core/1200/800?grayscale"
@@ -37,11 +37,11 @@ export default function PowerCore() {
           </motion.div>
 
           {/* Floating HUD Elements */}
-          <div className="absolute top-0 right-0 space-y-6">
+          <div className="relative md:absolute md:top-0 md:right-0 mt-8 md:mt-0 space-y-6 w-full md:w-auto flex justify-center md:block">
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="glass-panel p-6 rounded-2xl border-white/10 w-64"
+              className="glass-panel p-6 rounded-2xl border-white/10 w-full max-w-sm md:w-64"
             >
               <div className="font-headline text-[10px] tracking-widest text-tertiary uppercase mb-4">{t('Energy Flow')}</div>
               <div className="space-y-4">

@@ -13,10 +13,10 @@ const aeroSpecs = [
 export default function AeroKit() {
   const { t } = useTranslation();
   return (
-    <div className="relative min-h-screen pt-24 pl-24 pr-12 pb-24 flex flex-col">
-      <div className="flex-grow grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+    <div className="relative min-h-screen pt-24 px-6 md:pl-24 md:pr-12 pb-24 flex flex-col">
+      <div className="flex-grow grid grid-cols-1 lg:grid-cols-12 gap-12 items-center mt-12 lg:mt-0">
         {/* Left Side: Aero Visualization */}
-        <div className="lg:col-span-7 relative aspect-square flex items-center justify-center overflow-hidden">
+        <div className="lg:col-span-7 relative aspect-square flex items-center justify-center overflow-hidden max-w-lg mx-auto w-full lg:max-w-none">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}

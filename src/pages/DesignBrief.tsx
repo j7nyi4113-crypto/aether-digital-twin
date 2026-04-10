@@ -25,12 +25,12 @@ export default function DesignBrief() {
   }, []);
 
   return (
-    <div className="relative min-h-screen pt-24 pl-24 pr-12 pb-24 flex flex-col items-center">
+    <div className="relative min-h-screen pt-24 px-6 md:pl-24 md:pr-12 pb-24 flex flex-col items-center">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
-        className="w-full max-w-4xl glass-panel p-10 md:p-16 rounded-[3rem] border-white/5 relative overflow-hidden"
+        className="w-full max-w-4xl glass-panel p-6 md:p-16 rounded-[2rem] md:rounded-[3rem] border-white/5 relative overflow-hidden"
       >
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-tertiary to-transparent opacity-50" />
         <div className="absolute top-0 right-0 w-64 h-64 bg-tertiary/5 rounded-full blur-[100px] -z-10" />
@@ -161,7 +161,7 @@ export default function DesignBrief() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8, delay: 0.2 }}
-        className="w-full max-w-4xl mt-12 glass-panel p-10 md:p-16 rounded-[3rem] border-white/5 relative overflow-hidden flex flex-col md:flex-row gap-12 items-center"
+        className="w-full max-w-4xl mt-12 glass-panel p-6 md:p-16 rounded-[2rem] md:rounded-[3rem] border-white/5 relative overflow-hidden flex flex-col md:flex-row gap-12 items-center"
       >
         <div className="w-48 h-48 md:w-64 md:h-64 shrink-0 rounded-full overflow-hidden border border-white/10 relative group">
           <motion.img 

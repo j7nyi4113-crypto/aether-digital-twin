@@ -20,7 +20,7 @@ export default function Sidebar() {
   const isDesignBrief = location.pathname === '/design-brief';
 
   return (
-    <aside className="fixed left-0 top-24 bottom-24 w-20 rounded-r-3xl border-r border-white/10 bg-[#0f1419]/40 backdrop-blur-2xl flex flex-col items-center py-8 gap-8 z-40 shadow-[20px_0_40px_rgba(194,224,255,0.03)]">
+    <aside className="fixed left-0 top-24 bottom-24 w-20 rounded-r-3xl border-r border-white/10 bg-[#0f1419]/40 backdrop-blur-2xl hidden md:flex flex-col items-center py-8 gap-8 z-40 shadow-[20px_0_40px_rgba(194,224,255,0.03)]">
       <div className="flex flex-col items-center gap-1 mb-4">
         {isHome ? (
           <>

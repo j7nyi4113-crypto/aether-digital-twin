@@ -200,37 +200,38 @@ export default function Home() {
   return (
     <div className="relative min-h-screen pt-20 overflow-x-hidden">
       {/* Hero Section */}
-      <section className="relative h-[80vh] flex items-center px-6 md:px-24 overflow-hidden">
+      <section className="relative min-h-[90vh] md:h-[80vh] flex flex-col md:flex-row items-center px-6 md:px-24 overflow-hidden pt-20 md:pt-0">
         <div className="absolute inset-0 z-0">
           <img
             src={heroBg}
-            className="w-full h-full object-cover opacity-80"
+            className="w-full h-full object-cover opacity-80 object-center"
             alt="Background"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-background via-transparent to-background" />
+          <div className="absolute inset-0 bg-gradient-to-r from-background via-transparent to-background hidden md:block" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/20 via-transparent to-background md:hidden" />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
         </div>
 
         <motion.div
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="relative z-10 max-w-4xl w-full"
+          className="relative z-10 max-w-4xl w-full text-center md:text-left mt-12 md:mt-0"
         >
           <div className="inline-block px-3 py-1 mb-6 rounded-full border border-secondary/30 bg-secondary/5 text-secondary text-[10px] tracking-[0.2em] font-headline uppercase">
             {t('Aether Spiritus Edition')}
           </div>
-          <h1 className="font-headline text-6xl md:text-8xl font-bold tracking-tight mb-4 leading-none text-white">
+          <h1 className="font-headline text-[clamp(2.5rem,10vw,6rem)] font-bold tracking-tight mb-4 leading-none text-white">
             {t('AETHER')} <span className="text-transparent bg-clip-text bg-gradient-to-br from-primary to-secondary">{t('灵境系列')}</span>
           </h1>
-          <h2 className="font-headline text-2xl md:text-3xl text-primary/80 tracking-widest mb-8 font-light">
+          <h2 className="font-headline text-xl md:text-3xl text-primary/80 tracking-widest mb-8 font-light">
             {t('AETHER SPIRIT SERIES')}
           </h2>
-          <p className="text-on-surface-variant text-lg max-w-xl font-light leading-relaxed mb-10">
+          <p className="text-on-surface-variant text-base md:text-lg max-w-xl mx-auto md:mx-0 font-light leading-relaxed mb-10 px-4 md:px-0">
             {t('数字化孪生空间：重构车辆工程美学。')}<br />
-            <span className="text-sm tracking-wider uppercase opacity-60">Digital Twin Space: Reconstructing Vehicle Engineering Aesthetics.</span>
+            <span className="text-xs md:text-sm tracking-wider uppercase opacity-60">Digital Twin Space: Reconstructing Vehicle Engineering Aesthetics.</span>
           </p>
-          <div className="flex gap-6">
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center md:justify-start px-4 md:px-0">
             <button 
               onClick={handleStartEvolve}
               className="bg-gradient-to-br from-primary to-primary-container px-10 py-4 rounded-xl text-on-primary font-bold font-headline tracking-widest text-sm hover:scale-105 active:scale-95 transition-all duration-300 shadow-[0_0_40px_rgba(194,224,255,0.2)]"
@@ -246,12 +247,12 @@ export default function Home() {
           </div>
         </motion.div>
 
-        {/* Floating Data Panel */}
+        {/* Floating Data Panel - Now visible on mobile at the bottom of hero */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.5 }}
-          className="absolute right-24 bottom-32 hidden xl:block w-72 glass-panel p-6 rounded-3xl border-white/10"
+          className="relative md:absolute md:right-24 md:bottom-32 mt-12 md:mt-0 w-full max-w-[calc(100%-3rem)] md:w-72 glass-panel p-6 rounded-3xl border-white/10 z-10"
         >
           <div className="flex justify-between items-center mb-6">
             <div className="font-headline text-[10px] tracking-widest text-secondary uppercase">{t('Core Status')}</div>

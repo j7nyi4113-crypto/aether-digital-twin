@@ -218,12 +218,12 @@ export default function Guestbook() {
   };
 
   return (
-    <div className="relative min-h-screen pt-32 pl-24 pr-12 pb-24 flex flex-col items-center">
+    <div className="relative min-h-screen pt-32 px-6 md:pl-24 md:pr-12 pb-24 flex flex-col items-center">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
-        className="w-full max-w-4xl glass-panel p-10 md:p-16 rounded-[3rem] border-white/5 relative overflow-hidden mb-12"
+        className="w-full max-w-4xl glass-panel p-6 md:p-16 rounded-[2rem] md:rounded-[3rem] border-white/5 relative overflow-hidden mb-12"
       >
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-50" />
         <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[100px] -z-10" />

@@ -46,14 +46,14 @@ export default function Surface() {
   }, [location.search]);
 
   return (
-    <div className="relative min-h-screen pt-24 pl-24 pr-12 pb-24 flex flex-col">
-      <div className="flex-grow relative flex items-center justify-center overflow-hidden mt-10">
+    <div className="relative min-h-screen pt-24 px-6 md:pl-24 md:pr-12 pb-24 flex flex-col">
+      <div className="flex-grow relative flex flex-col md:flex-row items-center justify-center overflow-hidden mt-10 gap-12">
         <motion.div
           key={`${activeColor.name}-${activeEnv.name}`}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}
-          className="relative w-full max-w-6xl aspect-video"
+          className="relative w-full max-w-6xl aspect-video shrink-0 md:shrink"
         >
           {/* Main Display: Car Body or Environment Image */}
           <div className="absolute inset-0 z-0 flex items-center justify-center">
@@ -64,38 +64,38 @@ export default function Surface() {
               referrerPolicy="no-referrer"
             />
           </div>
-
-          {/* Detail View Overlay (Only show when Daylight/Car is active) */}
-          {!activeEnv.bg && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="absolute right-0 top-1/2 -translate-y-1/2 w-80 glass-panel p-8 rounded-3xl border-white/10"
-            >
-              <div className="font-headline text-[10px] tracking-[0.3em] text-secondary uppercase mb-6">{t('Material Specs')}</div>
-              <h3 className="font-headline text-2xl font-bold text-white mb-2">{t(activeColor.name)}</h3>
-              <p className="text-xs text-on-surface-variant font-light mb-8 leading-relaxed">
-                {t('纳米级液态金属涂层，支持实时光线追踪反射与多层色相演化。')}
-              </p>
-              
-              <div className="space-y-6">
-                <SpecItem label="Reflectivity" value="92%" />
-                <SpecItem label="Glossiness" value="88%" />
-                <SpecItem label="Metallic" value="100%" />
-              </div>
-
-              <button className="w-full mt-10 py-4 rounded-xl bg-white/5 border border-white/10 text-white font-headline text-[10px] tracking-widest uppercase hover:bg-white/10 transition-all">
-                {t('保存配置 | SAVE CONFIG')}
-              </button>
-            </motion.div>
-          )}
         </motion.div>
+
+        {/* Detail View Overlay (Only show when Daylight/Car is active) */}
+        {!activeEnv.bg && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="relative md:absolute md:right-0 md:top-1/2 md:-translate-y-1/2 w-full max-w-sm md:w-80 glass-panel p-8 rounded-3xl border-white/10 z-10"
+          >
+            <div className="font-headline text-[10px] tracking-[0.3em] text-secondary uppercase mb-6">{t('Material Specs')}</div>
+            <h3 className="font-headline text-2xl font-bold text-white mb-2">{t(activeColor.name)}</h3>
+            <p className="text-xs text-on-surface-variant font-light mb-8 leading-relaxed">
+              {t('纳米级液态金属涂层，支持实时光线追踪反射与多层色相演化。')}
+            </p>
+            
+            <div className="space-y-6">
+              <SpecItem label="Reflectivity" value="92%" />
+              <SpecItem label="Glossiness" value="88%" />
+              <SpecItem label="Metallic" value="100%" />
+            </div>
+
+            <button className="w-full mt-10 py-4 rounded-xl bg-white/5 border border-white/10 text-white font-headline text-[10px] tracking-widest uppercase hover:bg-white/10 transition-all">
+              {t('保存配置 | SAVE CONFIG')}
+            </button>
+          </motion.div>
+        )}
       </div>
 
       {/* Color Selection Bar & Environment Controls */}
-      <div className="mt-auto flex justify-between items-end">
+      <div className="mt-auto flex flex-col md:flex-row justify-between items-center md:items-end gap-12">
         {/* Only show color circles when in default HDR environment (activeEnv.bg is null) */}
-        <div className="flex gap-4">
+        <div className="flex flex-wrap justify-center gap-4 md:gap-6">
           {!activeEnv.bg && colors.map((color) => (
             <button
               key={color.name}
@@ -103,7 +103,7 @@ export default function Surface() {
               className={`group relative flex flex-col items-center gap-3 transition-all duration-300 ${activeColor.name === color.name ? 'scale-110' : 'opacity-60 hover:opacity-100'}`}
             >
               <div 
-                className={`w-12 h-12 rounded-full border-2 transition-all ${activeColor.name === color.name ? 'border-primary shadow-[0_0_15px_rgba(194,224,255,0.5)]' : 'border-transparent'}`}
+                className={`w-10 h-10 md:w-12 md:h-12 rounded-full border-2 transition-all ${activeColor.name === color.name ? 'border-primary shadow-[0_0_15px_rgba(194,224,255,0.5)]' : 'border-transparent'}`}
                 style={{ backgroundColor: color.code }}
               />
               <span className={`font-headline text-[8px] uppercase tracking-widest ${activeColor.name === color.name ? 'text-primary' : 'text-on-surface-variant'}`}>
@@ -113,7 +113,7 @@ export default function Surface() {
           ))}
         </div>
 
-        <div className="flex gap-6 glass-panel p-4 rounded-2xl border-white/10 ml-auto">
+        <div className="flex gap-4 md:gap-6 glass-panel p-4 rounded-2xl border-white/10 w-full md:w-auto justify-center">
           {environments.map((env) => (
             <EnvironmentControl 
               key={env.name}

@@ -107,7 +107,7 @@ export default function Acoustic() {
   }, [activeProfile]);
 
   return (
-    <div className="relative min-h-screen pt-24 pl-24 pr-12 pb-24 flex flex-col">
+    <div className="relative min-h-screen pt-24 px-6 md:pl-24 md:pr-12 pb-24 flex flex-col">
       <audio
         ref={audioRef}
         src={activeProfile.audioSrc}
@@ -117,12 +117,12 @@ export default function Acoustic() {
       <div className="flex-grow flex flex-col items-center justify-center">
         {/* Visualizer Area */}
         <div className="relative w-full max-w-4xl aspect-video flex items-center justify-center">
-          <div className="absolute inset-0 flex items-center justify-center gap-2">
-            {[...Array(40)].map((_, i) => (
+          <div className="absolute inset-0 flex items-center justify-center gap-1 md:gap-2 overflow-hidden px-4">
+            {[...Array(window.innerWidth < 768 ? 20 : 40)].map((_, i) => (
               <motion.div
                 key={i}
                 animate={{
-                  height: isPlaying ? [20, Math.random() * 150 + 50, 20] : 20,
+                  height: isPlaying ? [10, Math.random() * (window.innerWidth < 768 ? 80 : 150) + 20, 10] : 10,
                   opacity: isPlaying ? [0.3, 1, 0.3] : 0.3,
                 }}
                 transition={{
@@ -130,7 +130,7 @@ export default function Acoustic() {
                   repeat: Infinity,
                   ease: "easeInOut"
                 }}
-                className="w-1.5 bg-gradient-to-t from-tertiary via-primary to-secondary rounded-full"
+                className="w-1 md:w-1.5 bg-gradient-to-t from-tertiary via-primary to-secondary rounded-full shrink-0"
               />
             ))}
           </div>
