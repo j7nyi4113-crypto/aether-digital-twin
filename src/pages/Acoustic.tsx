@@ -4,9 +4,33 @@ import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const soundProfiles = [
-  { name: '灵境原声', label: 'Aether Pure', desc: '纯净电驱声场，模拟高频电磁共振。', audioSrc: '/audio/aether-pure.mp3' },
-  { name: '机械咆哮', label: 'Mechanical Roar', desc: '模拟V12引擎的数字化重组，低沉有力。', audioSrc: '/audio/mechanical-roar.mp3' },
-  { name: '未来脉冲', label: 'Future Pulse', desc: '赛博朋克风格的合成音效，充满科技感。', audioSrc: '/audio/future-pulse.mp3' },
+  { 
+    name: '灵境原声', 
+    label: 'AETHER Pristine', 
+    intention: '让物理空间消失。',
+    philosophy: '追求极致的纯净与空间还原。模拟自然界中没有回响干扰的开阔环境，利用 7.1.4 物理声道抵消座舱内的金属与玻璃反射。',
+    copy: '剥离物理噪音，回归声波本源。在这里，听见呼吸，听见星空。',
+    audioSrc: '/audio/aether-pure.mp3',
+    theme: 'pristine'
+  },
+  { 
+    name: '机械咆哮', 
+    label: 'Mechanical Roar', 
+    intention: '重燃内燃机的灵魂。',
+    philosophy: '针对高性能驾驶开发。采集 AETHER 原型机震动数据，通过车内音响补偿由于电动化流失的“机械生命力”，声音随踏板深度动态模拟气缸开合的颗粒感。',
+    copy: '电流与机械的共振。每一分扭矩释放，都是一次澎湃的灵魂唤醒。',
+    audioSrc: '/audio/mechanical-roar.mp3',
+    theme: 'roar'
+  },
+  { 
+    name: '未来脉冲', 
+    label: 'Future Pulse', 
+    intention: '定义下个世纪的行进感。',
+    philosophy: '完全数字化的合成声学。将车辆的行驶风阻、重力感应（G值）转化为低频脉冲和高频电子音，营造一种在数字空间穿梭的轻盈感。',
+    copy: '超越物质极限的数字节奏。穿梭于时空褶皱，感受流动的未来。',
+    audioSrc: '/audio/future-pulse.mp3',
+    theme: 'pulse'
+  },
 ];
 
 export default function Acoustic() {
@@ -116,23 +140,86 @@ export default function Acoustic() {
       />
       <div className="flex-grow flex flex-col items-center justify-center">
         {/* Visualizer Area */}
-        <div className="relative w-full max-w-4xl aspect-video flex items-center justify-center">
-          <div className="absolute inset-0 flex items-center justify-center gap-1 md:gap-2 overflow-hidden px-4">
-            {[...Array(window.innerWidth < 768 ? 20 : 40)].map((_, i) => (
-              <motion.div
-                key={i}
-                animate={{
-                  height: isPlaying ? [10, Math.random() * (window.innerWidth < 768 ? 80 : 150) + 20, 10] : 10,
-                  opacity: isPlaying ? [0.3, 1, 0.3] : 0.3,
-                }}
-                transition={{
-                  duration: 0.5 + Math.random() * 0.5,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-                className="w-1 md:w-1.5 bg-gradient-to-t from-tertiary via-primary to-secondary rounded-full shrink-0"
-              />
-            ))}
+        <div className="relative w-full max-w-4xl aspect-video flex items-center justify-center overflow-hidden">
+          {/* Theme-based Visualizers */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            {activeProfile.theme === 'pristine' && (
+              <div className="relative w-full h-full flex items-center justify-center">
+                {[...Array(3)].map((_, i) => (
+                  <motion.div
+                    key={i}
+                    animate={{
+                      scale: isPlaying ? [1, 1.5, 2] : 1,
+                      opacity: isPlaying ? [0.5, 0.2, 0] : 0.1,
+                    }}
+                    transition={{
+                      duration: 4,
+                      repeat: Infinity,
+                      delay: i * 1.3,
+                      ease: "easeOut"
+                    }}
+                    className="absolute w-64 h-64 rounded-full border border-white/20"
+                  />
+                ))}
+                <motion.div 
+                  animate={{ opacity: isPlaying ? [0.1, 0.3, 0.1] : 0.1 }}
+                  transition={{ duration: 3, repeat: Infinity }}
+                  className="w-48 h-48 rounded-full bg-white/5 blur-2xl" 
+                />
+              </div>
+            )}
+
+            {activeProfile.theme === 'roar' && (
+              <div className="flex items-center gap-1 h-64 px-4">
+                {[...Array(40)].map((_, i) => (
+                  <motion.div
+                    key={i}
+                    animate={{
+                      height: isPlaying ? [20, Math.random() * 180 + 40, 20] : 10,
+                      opacity: isPlaying ? [0.4, 1, 0.4] : 0.2,
+                    }}
+                    transition={{
+                      duration: 0.2 + Math.random() * 0.2,
+                      repeat: Infinity,
+                      ease: "linear"
+                    }}
+                    className="w-1.5 bg-gradient-to-t from-blue-600 via-purple-500 to-blue-400 rounded-none shadow-[0_0_10px_rgba(147,51,234,0.5)]"
+                  />
+                ))}
+              </div>
+            )}
+
+            {activeProfile.theme === 'pulse' && (
+              <div className="relative w-full h-64 flex flex-col justify-center gap-4 px-12">
+                {[...Array(6)].map((_, i) => (
+                  <div key={i} className="relative w-full h-px bg-white/5 overflow-hidden">
+                    <motion.div
+                      animate={{
+                        x: isPlaying ? ['-100%', '200%'] : '-100%',
+                        opacity: isPlaying ? [0, 1, 0] : 0,
+                      }}
+                      transition={{
+                        duration: 1.5 + (i * 0.2),
+                        repeat: Infinity,
+                        ease: "linear",
+                        delay: i * 0.1
+                      }}
+                      className="absolute top-0 h-full w-32 bg-gradient-to-r from-transparent via-primary to-transparent"
+                    />
+                  </div>
+                ))}
+                <div className="absolute inset-0 grid grid-cols-12 gap-2 opacity-10 pointer-events-none">
+                  {[...Array(48)].map((_, i) => (
+                    <motion.div 
+                      key={i}
+                      animate={{ opacity: isPlaying ? [0.1, 0.8, 0.1] : 0.1 }}
+                      transition={{ duration: 1, delay: Math.random() * 2, repeat: Infinity }}
+                      className="w-1 h-1 bg-primary rounded-full"
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           <motion.button
@@ -151,15 +238,31 @@ export default function Acoustic() {
 
         {/* Info Panel */}
         <motion.div
+          key={activeProfile.name}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mt-12 text-center max-w-2xl"
+          className="mt-12 text-center max-w-3xl"
         >
-          <div className="font-headline text-[10px] tracking-[0.4em] text-tertiary uppercase mb-4">Acoustic Engine v2.0</div>
-          <h2 className="font-headline text-4xl font-bold text-white mb-4">{t(activeProfile.name)}</h2>
-          <p className="text-on-surface-variant font-light leading-relaxed">
-            {t(activeProfile.desc)}
-          </p>
+          <div className="font-headline text-[10px] tracking-[0.4em] text-tertiary uppercase mb-2">Acoustic Engine v2.0</div>
+          <div className="text-primary font-headline text-xs tracking-widest uppercase mb-4 opacity-60">
+            {t(activeProfile.intention)}
+          </div>
+          <h2 className="font-headline text-4xl font-bold text-white mb-6">{t(activeProfile.name)}</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-left mb-8">
+            <div className="glass-panel p-6 rounded-2xl border-white/5">
+              <div className="text-[10px] text-tertiary font-headline uppercase tracking-widest mb-3">Design Philosophy</div>
+              <p className="text-xs text-on-surface-variant font-light leading-relaxed">
+                {t(activeProfile.philosophy)}
+              </p>
+            </div>
+            <div className="glass-panel p-6 rounded-2xl border-white/5 flex flex-col justify-center bg-primary/5">
+              <div className="text-[10px] text-primary font-headline uppercase tracking-widest mb-3">Core Resonance</div>
+              <p className="text-sm text-white font-light italic leading-relaxed">
+                "{t(activeProfile.copy)}"
+              </p>
+            </div>
+          </div>
         </motion.div>
       </div>
 
