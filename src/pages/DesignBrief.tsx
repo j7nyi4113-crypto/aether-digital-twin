@@ -4,6 +4,7 @@ import { BookOpen, Github, MessageCircle, Phone, Terminal, Send, MessageSquare, 
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import visionaryAvatar from '../assets/visionary-avatar.jpg';
+import signatureSvg from '../assets/signature.svg';
 import { supabase } from '../lib/supabase';
 
 export default function DesignBrief() {
@@ -247,22 +248,15 @@ export default function DesignBrief() {
         <div className="font-headline text-xs text-on-surface-variant uppercase tracking-[0.5em] mb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
           Directed by
         </div>
-        <svg 
-          viewBox="0 0 400 100" 
-          className="w-64 h-24 stroke-tertiary/40 group-hover:stroke-tertiary transition-all duration-500 group-hover:drop-shadow-[0_0_8px_rgba(128,236,255,0.8)]"
-          fill="none" 
-          strokeWidth="2" 
-          strokeLinecap="round" 
-          strokeLinejoin="round"
-        >
-          <motion.path 
-            initial={{ pathLength: 0 }}
-            whileInView={{ pathLength: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 2, ease: "easeInOut" }}
-            d="M 50,50 C 70,30 90,20 110,40 C 130,60 120,80 140,70 C 160,60 170,30 190,40 C 210,50 200,80 220,70 C 240,60 250,40 270,30 C 290,20 310,40 330,60 C 350,80 340,40 360,50"
-          />
-        </svg>
+        <motion.img 
+          src={signatureSvg} 
+          alt="Designer Signature"
+          initial={{ opacity: 0, scale: 0.8, filter: 'brightness(0.5) grayscale(1)' }}
+          whileInView={{ opacity: 1, scale: 1, filter: 'brightness(1) grayscale(0)' }}
+          viewport={{ once: true }}
+          transition={{ duration: 1.5, ease: "easeOut" }}
+          className="w-64 h-24 object-contain transition-all duration-500 group-hover:drop-shadow-[0_0_12px_rgba(128,236,255,0.6)]"
+        />
       </div>
 
       {/* Link to Guestbook */}
