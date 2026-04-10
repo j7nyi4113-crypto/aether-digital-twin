@@ -14,6 +14,7 @@ import frame270 from '../assets/360/270.jpg';
 import frame315 from '../assets/360/315.jpg';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
+import CoreEvolution from '../components/CoreEvolution';
 
 interface Message {
   id: string;
@@ -407,79 +408,9 @@ export default function Home() {
            </div>
         </motion.div>
       </section>
-
-      {/* Navigation Entry Cards */}
-      <section className="px-6 md:px-24 py-12 md:py-24 grid grid-cols-1 md:grid-cols-3 gap-8">
-        {modules.map((module, idx) => (
-          <motion.div
-            key={module.id}
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: idx * 0.2 }}
-          >
-            <Link
-              to={module.path}
-              className="group relative aspect-[4/5] block overflow-hidden rounded-3xl glass-panel transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(0,210,255,0.1)]"
-            >
-              {module.id === '01' ? (
-                <div className="absolute inset-0 w-full h-full opacity-40 group-hover:scale-110 transition-transform duration-700 bg-black/50 flex items-center justify-center">
-                  <div className="absolute inset-0 flex items-center justify-center opacity-80">
-                    <Cog className="absolute top-[10%] left-[-10%] w-64 h-64 text-tertiary/20 animate-[spin_12s_linear_infinite]" strokeWidth={1} />
-                    <Cog className="absolute top-[45%] left-[45%] w-48 h-48 text-secondary/30 animate-[spin_8s_linear_infinite_reverse]" strokeWidth={1.5} />
-                    <Cog className="absolute bottom-[-10%] right-[-10%] w-56 h-56 text-primary/20 animate-[spin_15s_linear_infinite]" strokeWidth={1} />
-                    <Cog className="absolute top-[20%] right-[10%] w-32 h-32 text-tertiary/40 animate-[spin_10s_linear_infinite]" strokeWidth={2} />
-                  </div>
-                </div>
-              ) : module.id === '02' ? (
-                <motion.div
-                  className="absolute inset-0 w-full h-full opacity-60 group-hover:scale-110 transition-transform duration-700"
-                  animate={{
-                    backgroundColor: [
-                      '#1A1A1A', // 曜石黑 Obsidian Black
-                      '#F5F5F5', // 珍珠白 Pearl White
-                      '#EAB308', // 赛博黄 Cyber Yellow
-                      '#8B5CF6', // 霓虹紫 Neon Purple
-                      '#3B82F6', // 量子蓝 Quantum Blue
-                      '#1A1A1A', // 循环回黑 Back to Black
-                    ]
-                  }}
-                  transition={{
-                    duration: 15,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }}
-                >
-                  {/* 模拟漆面的高光和金属光泽质感 */}
-                  <div className="absolute inset-0 bg-gradient-to-tr from-black/80 via-white/10 to-white/40 mix-blend-overlay" />
-                  <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-white/40 via-transparent to-transparent mix-blend-overlay" />
-                </motion.div>
-              ) : (
-                <img
-                  src={module.image}
-                  className="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:scale-110 transition-transform duration-700"
-                  alt={module.title}
-                  referrerPolicy="no-referrer"
-                />
-              )}
-              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
-              <div className="absolute bottom-10 left-10 right-10">
-                <div className={cn("font-headline text-[10px] tracking-[0.3em] uppercase mb-2", module.color)}>
-                  {t(`Module ${module.id}`)}
-                </div>
-                <h3 className="font-headline text-2xl font-bold mb-1 text-white">{t(module.title)}</h3>
-                <h4 className="font-headline text-xs tracking-widest text-primary/60 uppercase mb-4">{t(module.subtitle)}</h4>
-                <p className="text-xs text-on-surface-variant font-light mb-6 leading-relaxed">
-                  {t(module.description)}
-                </p>
-                <div className={cn("flex items-center gap-2 font-headline text-[10px] tracking-widest uppercase group-hover:gap-4 transition-all", module.color)}>
-                  {t('进入模块 | ENTER')} <ArrowRight className="w-4 h-4" />
-                </div>
-              </div>
-            </Link>
-          </motion.div>
-        ))}
-      </section>
+      
+      {/* Navigation Entry Cards - Now Refactored to CoreEvolution */}
+      <CoreEvolution />
 
       {/* Latest Messages Section */}
       <section className="px-6 md:px-24 pb-24">

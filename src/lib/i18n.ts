@@ -70,6 +70,11 @@ const resources = {
       "Daylight": "Daylight",
       "Golden Hour": "Golden Hour",
       "Night": "Night",
+      "Evolving": "Evolving",
+      "实时演化模式已开启。纳米级液态金属涂层正在根据环境光照与电荷流动进行色相偏移。": "Real-time evolution mode is active. Nano-level liquid metal coating is shifting hues based on ambient light and charge flow.",
+      "手动配置模式。纳米级液态金属涂层支持实时光线追踪反射与多层色相演化。": "Manual configuration mode. Nano-level liquid metal coating supports real-time ray tracing reflection and multi-layer hue evolution.",
+      "停止演化 | STOP EVOLVE": "STOP EVOLVE",
+      "开启自动演化 | AUTO EVOLVE": "AUTO EVOLVE",
       // Acoustic
       "灵境原声": "Aether Pure",
       "机械咆哮": "Mechanical Roar",
@@ -295,6 +300,11 @@ const resources = {
       "Daylight": "白昼",
       "Golden Hour": "黄金时刻",
       "Night": "夜晚",
+      "Evolving": "演化中",
+      "实时演化模式已开启。纳米级液态金属涂层正在根据环境光照与电荷流动进行色相偏移。": "实时演化模式已开启。纳米级液态金属涂层正在根据环境光照与电荷流动进行色相偏移。",
+      "手动配置模式。纳米级液态金属涂层支持实时光线追踪反射与多层色相演化。": "手动配置模式。纳米级液态金属涂层支持实时光线追踪反射与多层色相演化。",
+      "停止演化 | STOP EVOLVE": "停止演化",
+      "开启自动演化 | AUTO EVOLVE": "开启自动演化",
       // Acoustic
       "灵境原声": "灵境原声",
       "机械咆哮": "机械咆哮",
