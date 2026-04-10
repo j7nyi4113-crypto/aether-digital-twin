@@ -169,7 +169,9 @@ export default function Guestbook() {
     setShowNicknameWarning(false);
 
     try {
-      if (!supabase) throw new Error('Supabase client not initialized');
+      if (!supabase) {
+        throw new Error('Supabase configuration missing. If this is on Vercel, please add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to Environment Variables.');
+      }
       const { error } = await supabase
         .from('messages')
         .insert([
