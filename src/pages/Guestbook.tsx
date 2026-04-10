@@ -183,10 +183,10 @@ export default function Guestbook() {
 
       if (error) throw error;
       window.dispatchEvent(new Event('newMessagePosted'));
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error sending message:', error);
       setNewMessage(textToSend);
-      alert('Failed to send message. Please try again.');
+      alert(`Failed to send message: ${error.message || 'Please try again.'}`);
     } finally {
       setIsSending(false);
     }
