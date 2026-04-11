@@ -14,18 +14,56 @@ interface Message {
   userIdHash: string; // Hash of the user_id for identification
 }
 
+const CACHE_KEY = 'aether-guestbook-cache';
+const FETCH_TIMEOUT = 8000; // 8 seconds timeout
+
+const SkeletonMessage = () => (
+  <motion.div
+    initial={{ opacity: 0.3 }}
+    animate={{ opacity: [0.3, 0.6, 0.3] }}
+    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+    className="flex gap-4 p-6 bg-white/5 rounded-2xl border border-white/5 mb-6"
+  >
+    <div className="w-12 h-12 rounded-full bg-white/10 shrink-0" />
+    <div className="flex-1 space-y-3">
+      <div className="h-4 bg-white/10 rounded-md w-1/4" />
+      <div className="h-3 bg-white/10 rounded-md w-full" />
+      <div className="h-3 bg-white/10 rounded-md w-5/6" />
+    </div>
+  </motion.div>
+);
+
 export default function Guestbook() {
   const { t } = useTranslation();
   const { user } = useAuth();
   const [newMessage, setNewMessage] = useState('');
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  
+  // Initialize messages from localStorage
+  const [messages, setMessages] = useState<Message[]>(() => {
+    const cached = localStorage.getItem(CACHE_KEY);
+    return cached ? JSON.parse(cached) : [];
+  });
+  
+  // If we have cached messages, we're not technically "loading" the initial UI
+  const [isLoading, setIsLoading] = useState(() => {
+    const cached = localStorage.getItem(CACHE_KEY);
+    return !cached;
+  });
+  
   const [isSending, setIsSending] = useState(false);
   const [showNicknameWarning, setShowNicknameWarning] = useState(false);
   const [localUserIdHash, setLocalUserIdHash] = useState<string>('');
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isSlowConnection, setIsSlowConnection] = useState(false);
   
   const localUserId = user?.id || 'guest';
+
+  // Sync messages to cache whenever they change
+  useEffect(() => {
+    if (messages.length > 0) {
+      localStorage.setItem(CACHE_KEY, JSON.stringify(messages));
+    }
+  }, [messages]);
 
   // Get the hash of localUserId from server once and check for admin key
   useEffect(() => {
@@ -117,17 +155,25 @@ export default function Guestbook() {
       ]);
       return;
     }
+
+    const fetchPromise = supabase
+      .from('v_messages')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('TIMEOUT')), FETCH_TIMEOUT)
+    );
+
     try {
-      // Fetch from the secure view instead of the table
-      const { data, error } = await supabase
-        .from('v_messages')
-        .select('*')
-        .order('created_at', { ascending: false });
+      // Race the fetch against the 8s timeout
+      const response = await Promise.race([fetchPromise, timeoutPromise]) as any;
+      const { data, error } = response;
 
       if (error) throw error;
 
       if (data) {
-        const formattedMessages: Message[] = data.map(msg => ({
+        const formattedMessages: Message[] = data.map((msg: any) => ({
           id: msg.id,
           text: msg.text,
           nickname: msg.nickname,
@@ -135,10 +181,17 @@ export default function Guestbook() {
           timestamp: new Date(msg.created_at).getTime(),
           userIdHash: msg.user_id_hash
         }));
+        
         setMessages(formattedMessages);
+        setIsSlowConnection(false);
       }
-    } catch (error) {
-      console.error('Error fetching messages:', error);
+    } catch (error: any) {
+      if (error.message === 'TIMEOUT') {
+        console.warn('Supabase fetch timed out (8s)');
+        setIsSlowConnection(true);
+      } else {
+        console.error('Error fetching messages:', error);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -270,10 +323,22 @@ export default function Guestbook() {
 
         {/* Messages List */}
         <div className="space-y-6">
+          {isSlowConnection && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              className="flex items-center gap-2 text-primary font-headline text-xs tracking-widest uppercase bg-primary/10 p-4 rounded-xl border border-primary/20 mb-6"
+            >
+              <AlertCircle className="w-4 h-4 animate-pulse" />
+              {t('数据链路连接较慢，正在全力同步中...', '数据链路连接较慢，正在全力同步中...')}
+            </motion.div>
+          )}
+
           {isLoading ? (
-            <div className="flex flex-col items-center py-20 text-white/20">
-              <Loader2 className="w-10 h-10 animate-spin mb-4" />
-              <p className="font-headline text-xs tracking-widest uppercase">{t('Loading Messages...', '加载留言中...')}</p>
+            <div className="space-y-4">
+              <SkeletonMessage />
+              <SkeletonMessage />
+              <SkeletonMessage />
             </div>
           ) : messages.length === 0 ? (
             <div className="flex flex-col items-center py-20 text-white/20 border border-dashed border-white/5 rounded-3xl">
