@@ -16,37 +16,53 @@
 
 ## 核心特性
 
-### 1. 智能 AI 对话系统
+### 1. 首页 Hero 与 360 度观察模块
+- **360 度车辆展示**：支持鼠标拖拽/触摸滑动，使用 8 张关键帧序列图实现平滑插值旋转
+- **帧间透明度混合**：通过双层图片叠加（Crossfade）实现非关键帧的平滑过渡
+- **实时角度 HUD**：悬浮的 360 度查看器界面上方实时显示当前旋转角度
+- **核心状态面板**：动态数据面板展示同步率、连接状态，用户留言后触发状态变化动画
+
+### 2. 模块 01 — 机械灵魂 (Mechanical Soul)
+四大核心性能指标卡片，点击均弹出深度解析面板：
+
+- **功率 (580 kW)**：动态数值滚动动画、Chart.js 雷达图对比（AETHER vs 竞品在功率/响应/散热/静谧性四维度）、背景视差联动聚焦电机
+- **扭矩 (850 N·m)**：Chart.js 曲线图对比扭矩输出衰减、底盘半轴光效联动、移动端触觉反馈（Haptic Vibration）
+- **风阻 (0.198 Cd)**：粒子系统模拟气流划过车身、交互式滑块对比传统造型与仿生设计、底盘风洞视图高亮关键气动部位
+- **重量 (2,150 kg)**：自动触发的重量拆解动效（固态电池包/前后一体化压铸悬浮）、重心标记 CG 点可视化、滚动联动底盘晃动
+
+### 3. 模块 02 — 漆面生长 (Surface Growth)
+- **五色漆面流转**：背景色在曜石黑、珍珠白、赛博黄、霓虹紫、量子蓝之间自动平滑过渡
+- **金属光泽模拟**：叠加渐变高光遮罩（`mix-blend-overlay`），模拟真实车漆的液态金属反光质感
+
+### 4. 设计纲要 (Design Brief)
+- **设计哲学详情**：温润科技美学五大章节完整呈现
+- **The Visionary 远见者专栏**：设计师形象展示（带模糊到清晰揭幕动画）、交互式 SVG 签名、社交矩阵图标（微信/QQ/电话悬浮显示 ID）
+- **实时留言系统**：基于 Supabase Realtime 的全用户留言板，支持自定义头像与昵称、仅允许删除自己的消息
+- **昵称强制修改**：用户必须修改默认 "Guest" 昵称后才能发送留言，带红色边框警告动画
+
+### 5. 全局用户系统
+- **头像上传**：支持从 Navbar 头像按钮上传自定义头像，通过 FileReader 转 Base64 存储
+- **昵称编辑**：下拉面板实时编辑昵称，同步更新留言板显示
+
+### 6. 声音景观 (Acoustic)
+- **音频播放/暂停**：点击声景卡片切换播放状态
+- **淡入淡出效果**：音量从 0 逐级递增至 0.75 / 递减至 0（setInterval 驱动）
+- **音量记忆**：默认 75% 音量
+
+### 7. 页脚三大系统页面
+- **Privacy Policy（隐私政策）**：毛玻璃弹窗 + 背景光晕动画 + 阅读进度条 + 底部悬浮同意按钮
+- **System Status（系统状态）**：全屏极客风面板，Hex 16进制数据流背景，神经脉络图交互（悬停左侧模块触发右侧 3D 车身对应部位发光），心跳脉冲状态指示
+- **Manual（使用手册）**：交互式热点（4 个可点击的 3D 模型热点）、搜索即所得（输入关键词自动切换对应内容）、循环动效说明（UWB 靠近/手势悬浮/动力模式/充电口等）
+
+### 8. 智能 AI 对话系统
 - **Google Gemini 集成**：基于 Gemini 2.0 Flash 模型，支持多语言对话
-- **Markdown 渲染**：AI 回复支持完整的 Markdown 格式，包括代码高亮
-- **打字机效果**：流式文字输出动画，增强对话沉浸感
-- **情感系统**：AI 拥有 8 种情感状态，随对话上下文动态切换
+- **Markdown 渲染**：AI 回复支持完整的 Markdown 格式
+- **打字机效果**：流式文字输出动画
+- **情感系统**：8 种情感状态随对话上下文动态切换
 
-### 2. WebGL 着色器动画
-- **Fragment Shader**：基于 GLSL 的动态粒子背景，响应鼠标移动
-- **性能优化**：自适应分辨率，移动端自动降级
-- **视觉融合**：光晕、高斯模糊与渐变的有机组合
-
-### 3. GSAP 滚动叙事
-- **ScrollTrigger**：滚动驱动的分步动画系统
-- **移动端适配**：使用 `gsap.matchMedia` 实现响应式动画
-- **Core Evolution**：首页核心进化模块的三段式分裂动画
-
-### 4. 留言板系统
-- **Supabase 后端**：实时数据库存储，支持持久化
-- **SWR 缓存策略**：本地 localStorage 缓存 + 后台静默更新
-- **超时处理**：8 秒超时机制，优雅降级体验
-- **骨架屏**：感知性能优化，减少用户焦虑
-
-### 5. 设计哲��页面
-- **The Visionary**：设计师形象展示，模糊到清晰的揭幕动画
-- **SVG 签名**：交互式手写签名动画
-- **Shader Terminal**：隐藏的 WebGL 着色器代码展示
-
-### 6. 登录与用户系统
-- **多平台登录**：Google / GitHub / 微信（预留）
-- **头像上传**：支持本地图片上传预览
-- **QR 码登录**：微信登录二维码界面（带安全提示）
+### 9. 多语言支持 (i18n)
+- **中英文切换**：全站 100+ 词条覆盖（首页、机械模块、声景、设计纲要、导航栏等）
+- **动态语言切换**：无需刷新页面即可切换语言
 
 ---
 
@@ -57,10 +73,10 @@
 | **前端框架** | React 19 + TypeScript 5.8 | 组件化开发，类型安全 |
 | **构建工具** | Vite 6.2 | 快速热更新，ESM 支持 |
 | **样式系统** | Tailwind CSS 4.1 + clsx + tailwind-merge | 原子化 CSS，条件样式 |
-| **动画引擎** | GSAP 3.14 + Motion (Framer Motion) | 复杂动画 + React 动画 |
+| **动画引擎** | Motion (Framer Motion) + GSAP | 复杂动画 + 滚动驱动叙事 |
 | **AI 模型** | Google Gemini 2.0 Flash | 多模态 AI 对话 |
-| **数据库** | Supabase (PostgreSQL) | 实时数据存储 |
-| **图表** | Chart.js + react-chartjs-2 | 数据可视化 |
+| **数据库** | Supabase (PostgreSQL) | 实时数据存储 + Realtime 订阅 |
+| **图表** | Chart.js + react-chartjs-2 | 雷达图 / 曲线图数据可视化 |
 | **路由** | React Router DOM 7 | 单页应用路由 |
 | **国际化** | i18next + react-i18next | 多语言支持 |
 | **图标** | Lucide React | 轻量级图标库 |
@@ -72,36 +88,38 @@
 ```
 aether-digital-twin/
 ├── public/
-│   ├── fonts/                    # 自定义字体文件
-│   │   ├── SpaceGrotesk-Bold.woff2
-│   │   └── SpaceGrotesk-Regular.woff2
-│   └── AETHER.gif               # 品牌动图
+│   └── fonts/                      # 自定义字体文件
 ├── src/
+│   ├── assets/
+│   │   ├── 360/                    # 360 度观察序列帧 (0.jpg - 315.jpg)
+│   │   ├── hero-bg.jpg             # 底盘/车身素材
+│   │   └── visionary-avatar.jpg    # 设计师头像
 │   ├── components/
-│   │   ├── AIChat.tsx           # AI 对话组件
-│   │   ├── AIBackground.tsx     # WebGL 着色器背景
-│   │   ├── CoreEvolution.tsx    # 核心进化滚动动画
-│   │   ├── Header.tsx           # 导航头
-│   │   ├── Sidebar.tsx          # 侧边栏导航
-│   │   ├── StatsChart.tsx       # 数据图表
-│   │   └── ThemeToggle.tsx      # 主题切换
+│   │   ├── Navbar.tsx              # 顶部导航栏（含头像上传 + 昵称编辑）
+│   │   ├── Sidebar.tsx             # 侧边栏导航
+│   │   ├── Footer.tsx              # 底部导航（含 Privacy/System/Manual 三大弹窗）
+│   │   ├── AIChat.tsx              # AI 对话组件
+│   │   └── AIBackground.tsx        # WebGL 着色器背景
 │   ├── pages/
-│   │   ├── Home.tsx             # 首页
-│   │   ├── About.tsx            # 关于页
-│   │   ├── DesignBrief.tsx      # 设计哲��页
-│   │   ├── Guestbook.tsx        # 留言板
-│   │   ├── Login.tsx            # 登录页
-│   │   └── NotFound.tsx         # 404 页
-│   ├── i18n/                    # 国际化配置
-│   ├── App.tsx                  # 根组件
-│   ├── main.tsx                 # 入口文件
-│   └── index.css                # 全局样式
-├── server/                      # 后端服务（可选）
-├── index.html                   # HTML 模板
-├── vite.config.ts               # Vite 配置
-├── tailwind.config.js           # Tailwind 配置
-├── tsconfig.json                # TypeScript 配置
-└── package.json                 # 依赖管理
+│   │   ├── Home.tsx                # 首页（Hero + 360° Viewer + 品牌介绍 + 入口卡片）
+│   │   ├── Mechanical.tsx          # 机械灵魂（功率/扭矩/风阻/重量深度弹窗）
+│   │   ├── SurfaceGrowth.tsx       # 漆面生长
+│   │   ├── Acoustic.tsx            # 声音景观（音频播放 + 淡入淡出）
+│   │   ├── DesignBrief.tsx         # 设计纲要 + The Visionary + 留言板
+│   │   ├── Login.tsx               # 登录页
+│   │   └── NotFound.tsx            # 404 页面
+│   ├── lib/
+│   │   ├── i18n.ts                 # 国际化配置与翻译词典
+│   │   ├── supabase.ts             # Supabase 客户端初始化
+│   │   └── utils.ts                # 工具函数 (cn)
+│   ├── App.tsx                     # 根组件与路由配置
+│   ├── main.tsx                    # 入口文件
+│   └── index.css                   # 全局样式与字体
+├── .env                            # 环境变量（Supabase 密钥）
+├── index.html                      # HTML 模板
+├── vite.config.ts                  # Vite 配置
+├── tsconfig.json                   # TypeScript 配置
+└── package.json                    # 依赖管理
 ```
 
 ---
@@ -111,79 +129,78 @@ aether-digital-twin/
 ### 前置要求
 
 - **Node.js** >= 18.0.0
-- **npm** >= 9.0.0 或 **yarn** >= 1.22.0
+- **npm** >= 9.0.0
 - **Google Gemini API Key**（用于 AI 对话功能）
-- **Supabase 项目**（用于留言板功能）
+- **Supabase 项目**（用于实时留言板功能）
 
 ### 安装步骤
 
-1. **克隆仓库**
-   ```bash
-   git clone https://github.com/YOUR_USERNAME/aether-digital-twin.git
-   cd aether-digital-twin
-   ```
+```bash
+# 1. 克隆仓库
+git clone https://github.com/j7nyi4113-crypto/aether-digital-twin.git
+cd aether-digital-twin
 
-2. **安装依赖**
-   ```bash
-   npm install
-   ```
+# 2. 安装依赖
+npm install
 
-3. **配置环境变量**
-   
-   创建 `.env.local` 文件：
-   ```env
-   # Google Gemini API
-   GEMINI_API_KEY=your_gemini_api_key_here
-   
-   # Supabase 配置（用于留言板）
-   VITE_SUPABASE_URL=your_supabase_project_url
-   VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-   ```
+# 3. 配置环境变量
+# 创建 .env 文件，填入以下内容：
+```
 
-4. **启动开发服务器**
-   ```bash
-   npm run dev
-   ```
-   
-   访问 `http://localhost:3000` 查看应用。
+```env
+# Supabase 配置
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 
-### 其他命令
+# Google Gemini API（用于 AI 聊天）
+GEMINI_API_KEY=your_gemini_api_key
+```
 
 ```bash
-# 构建生产版本
-npm run build
+# 4. 启动开发服务器
+npm run dev
+```
 
-# 预览生产构建
-npm run preview
+访问 `http://localhost:3000` 查看应用。
 
-# 代码检查
-npm run lint
+### 命令参考
 
-# 清理构建目录
-npm run clean
+```bash
+npm run dev       # 启动开发服务器（端口 3000）
+npm run build     # 构建生产版本
+npm run preview   # 预览生产构建
+npm run lint      # TypeScript 类型检查
+npm run clean     # 清理构建目录
 ```
 
 ---
 
-## 环境变量配置
+## Supabase 配置
 
-| 变量名 | 说明 | 必需 |
-|--------|------|------|
-| `GEMINI_API_KEY` | Google Gemini API 密钥 | ✅ |
-| `VITE_SUPABASE_URL` | Supabase 项目 URL | ✅ |
-| `VITE_SUPABASE_ANON_KEY` | Supabase 匿名密钥 | ✅ |
+### 创建 messages 表
 
-### 获取 API 密钥
+在 Supabase SQL Editor 中执行：
 
-**Google Gemini API**
-1. 访问 [Google AI Studio](https://aistudio.google.com/)
-2. 创建新项目并生成 API Key
-3. 将密钥添加到 `.env.local`
+```sql
+create table messages (
+  id uuid default uuid_generate_v4() primary key,
+  user_id text,
+  nickname text,
+  avatar_url text,
+  text text,
+  created_at timestamp with time zone default timezone('utc'::text, now())
+);
 
-**Supabase**
-1. 访问 [Supabase](https://supabase.com/) 并创建项目
-2. 在 Settings > API 中获取 URL 和 anon key
-3. 创建 `messages` 表用于留言板功能
+alter table messages enable row level security;
+
+create policy "Allow public insert" on messages for insert with check (true);
+create policy "Allow public select" on messages for select using (true);
+create policy "Allow owner delete" on messages for delete using (auth.uid()::text = user_id);
+```
+
+### 启用 Realtime
+
+在 Supabase Dashboard > Database > Replication 中，启用 `messages` 表的 Realtime 功能。
 
 ---
 
@@ -191,23 +208,15 @@ npm run clean
 
 ### Vercel 部署（推荐）
 
-1. **连接 GitHub 仓库**
-   - 登录 [Vercel](https://vercel.com/)
-   - 点击 "New Project" 导入 GitHub 仓库
-
-2. **配置环境变量**
-   - 在 Vercel 项目设置中添加上述环境变量
-
-3. **自动部署**
-   - 推送到 `main` 分支自动触发部署
+1. 登录 [Vercel](https://vercel.com/)，点击 "New Project"
+2. 导入 GitHub 仓库 `j7nyi4113-crypto/aether-digital-twin`
+3. 配置环境变量（`VITE_SUPABASE_URL`、`VITE_SUPABASE_ANON_KEY`）
+4. 构建命令：`npm run build`，输出目录：`dist`
+5. 推送到 `main` 分支自动触发部署
 
 ### 其他平台
 
-项目支持任何支持 Vite 构建的平台：
-
-- **Netlify**：拖拽 `dist` 文件夹或连接 Git
-- **Cloudflare Pages**：使用 `npm run build` 命令
-- **GitHub Pages**：需配置 `base` 路径（见下方说明）
+项目支持任何支持 Vite 构建的平台：Netlify、Cloudflare Pages、GitHub Pages 等。
 
 ---
 
@@ -221,84 +230,15 @@ AETHER 的设计哲学是将冰冷的技术转化为温暖的体验：
 - **光影呼吸**：动态粒子和光晕效果，模拟自然光的变化
 - **情感共鸣**：通过动画节奏和交互反馈建立情感连接
 
-### 设计原则
-
-1. **渐进式披露**：信息分层次展现，避免一次性过载
-2. **响应式优先**：移动端优先设计，桌面端增强体验
-3. **性能感知**：骨架屏和过渡动画减少等待焦虑
-4. **无障碍考虑**：高对比度、键盘导航支持
-
 ### 色彩系统
 
-```css
---primary: #6366f1     /* 主色调：靛蓝 */
---secondary: #8b5cf6   /* 辅助色：紫色 */
---accent: #ec4899      /* 强调色：粉色 */
---dark: #0f172a        /* 深色背景 */
---light: #f8fafc       /* 浅色背景 */
-```
-
----
-
-## 组件说明
-
-### AIChat 组件
-
-```tsx
-<AIChat />
-```
-
-智能对话组件，集成 Google Gemini API。支持：
-- 多轮对话上下文
-- Markdown 格式渲染
-- 打字机动画效果
-- 情感状态切换
-
-### CoreEvolution 组件
-
-```tsx
-<CoreEvolution />
-```
-
-首页核心进化模块，展示三个核心理念：
-- **机械灵魂**：数字世界的核心驱动力
-- **漆面生长**：界面的有机演化过程
-- **空间声场**：多维度的感官体验
-
-桌面端使用 GSAP ScrollTrigger 实现分裂动画，移动端切换为静态布局。
-
-### AIBackground 组件
-
-```tsx
-<AIBackground />
-```
-
-基于 WebGL 的动态背景，使用 Fragment Shader 实现：
-- 流动的粒子效果
-- 鼠标交互响应
-- 自适应性能优化
-
----
-
-## 性能优化
-
-### 已实施的优化策略
-
-1. **代码分割**：使用 React.lazy 和 Suspense 实现路由级代码分割
-2. **图片优化**：WebP 格式 + 懒加载
-3. **字体加载**：使用 `font-display: swap` 避免布局偏移
-4. **动画优化**：GPU 加速 + `will-change` 提示
-5. **数据缓存**：localStorage SWR 策略减少网络请求
-
-### 性能监控
-
-```bash
-# 构建分析
-npm run build -- --analyze
-
-# Lighthouse 检测
-npx lighthouse http://localhost:3000 --view
-```
+| 色彩 | 用途 | 色值 |
+|------|------|------|
+| Primary | 主色调（荧光蓝） | `#00D2FF` |
+| Secondary | 辅助色（紫色） | `#8B5CF6` |
+| Tertiary | 强调色（青绿） | `#88ECCF` |
+| Background | 深色背景 | `#0A0A0A` |
+| Surface | 卡片/面板 | `#111111` |
 
 ---
 
@@ -310,77 +250,16 @@ npx lighthouse http://localhost:3000 --view
 | Firefox | >= 88 | ✅ 完全支持 |
 | Safari | >= 14 | ✅ 完全支持 |
 | Edge | >= 90 | ✅ 完全支持 |
-| IE | - | ❌ 不支持 |
-
----
-
-## 常见问题
-
-### Q: 如何获取 Google Gemini API Key？
-
-访问 [Google AI Studio](https://aistudio.google.com/)，登录 Google 账号后即可创建 API Key。免费额度足以满足开发和测试需求。
-
-### Q: 留言板在国内访问很慢怎么办？
-
-项目已内置 SWR 缓存策略：
-- 首次加载后数据会缓存到 localStorage
-- 后续访问会立即显示缓存数据
-- 8 秒超时后会显示友好提示
-
-### Q: 如何自定义主题颜色？
-
-修改 `src/index.css` 中的 CSS 变量：
-
-```css
-:root {
-  --primary: #your-color;
-  --secondary: #your-color;
-  /* ... */
-}
-```
-
-### Q: 移动端动画卡顿怎么办？
-
-项目已针对移动端优化：
-- CoreEvolution 组件在移动端禁用复杂动画
-- WebGL 背景自动降低分辨率
-- 使用 `prefers-reduced-motion` 媒体查询
-
----
-
-## 贡献指南
-
-欢迎贡献代码！请遵循以下步骤：
-
-1. Fork 本仓库
-2. 创建特性分支：`git checkout -b feature/your-feature`
-3. 提交更改：`git commit -m 'feat: add your feature'`
-4. 推送分支：`git push origin feature/your-feature`
-5. 提交 Pull Request
-
-### 代码规范
-
-- 使用 TypeScript 严格模式
-- 遵循 ESLint + Prettier 配置
-- 组件使用函数式组件 + Hooks
-- 样式使用 Tailwind CSS 原子类
-
----
-
-## 许可证
-
-MIT License - 详见 [LICENSE](LICENSE) 文件
 
 ---
 
 ## 联系方式
 
-- **项目主页**：[AETHER Digital Twin](https://aether-digital-twin.vercel.app)
-- **问题反馈**：[GitHub Issues](https://github.com/YOUR_USERNAME/aether-digital-twin/issues)
-- **邮箱**：your-email@example.com
+- **GitHub**：[j7nyi4113-crypto/aether-digital-twin](https://github.com/j7nyi4113-crypto/aether-digital-twin)
+- **设计师**：Junyi Liu
 
 ---
 
 <p align="center">
-  <strong>AETHER</strong> - 温暖科技，连接未来
+  <strong>AETHER</strong> — 科技，从未如此贴近呼吸
 </p>
