@@ -9,7 +9,7 @@
 </div>
 
 <p align="center">
-  <strong>AETHER</strong> 是一个融合科技美学与交互创新的数字孪生体验平台，通过 WebGL 着色器动画、GSAP 滚动驱动叙事和 AI 对话系统，打造沉浸式的「暖科技」美学体验。
+  <strong>AETHER</strong> 是一个融合科技美学与交互创新的数字孪生体验平台，通过动态粒子动画、GSAP 滚动驱动叙事和 Supabase 实时数据库，打造沉浸式的「暖科技」美学体验。
 </p>
 
 ---
@@ -54,13 +54,7 @@
 - **System Status（系统状态）**：全屏极客风面板，Hex 16进制数据流背景，神经脉络图交互（悬停左侧模块触发右侧 3D 车身对应部位发光），心跳脉冲状态指示
 - **Manual（使用手册）**：交互式热点（4 个可点击的 3D 模型热点）、搜索即所得（输入关键词自动切换对应内容）、循环动效说明（UWB 靠近/手势悬浮/动力模式/充电口等）
 
-### 8. 智能 AI 对话系统
-- **Google Gemini 集成**：基于 Gemini 2.0 Flash 模型，支持多语言对话
-- **Markdown 渲染**：AI 回复支持完整的 Markdown 格式
-- **打字机效果**：流式文字输出动画
-- **情感系统**：8 种情感状态随对话上下文动态切换
-
-### 9. 多语言支持 (i18n)
+### 8. 多语言支持 (i18n)
 - **中英文切换**：全站 100+ 词条覆盖（首页、机械模块、声景、设计纲要、导航栏等）
 - **动态语言切换**：无需刷新页面即可切换语言
 
@@ -74,7 +68,6 @@
 | **构建工具** | Vite 6.2 | 快速热更新，ESM 支持 |
 | **样式系统** | Tailwind CSS 4.1 + clsx + tailwind-merge | 原子化 CSS，条件样式 |
 | **动画引擎** | Motion (Framer Motion) + GSAP | 复杂动画 + 滚动驱动叙事 |
-| **AI 模型** | Google Gemini 2.0 Flash | 多模态 AI 对话 |
 | **数据库** | Supabase (PostgreSQL) | 实时数据存储 + Realtime 订阅 |
 | **图表** | Chart.js + react-chartjs-2 | 雷达图 / 曲线图数据可视化 |
 | **路由** | React Router DOM 7 | 单页应用路由 |
@@ -97,9 +90,7 @@ aether-digital-twin/
 │   ├── components/
 │   │   ├── Navbar.tsx              # 顶部导航栏（含头像上传 + 昵称编辑）
 │   │   ├── Sidebar.tsx             # 侧边栏导航
-│   │   ├── Footer.tsx              # 底部导航（含 Privacy/System/Manual 三大弹窗）
-│   │   ├── AIChat.tsx              # AI 对话组件
-│   │   └── AIBackground.tsx        # WebGL 着色器背景
+│   │   └── Footer.tsx              # 底部导航（含 Privacy/System/Manual 三大弹窗）
 │   ├── pages/
 │   │   ├── Home.tsx                # 首页（Hero + 360° Viewer + 品牌介绍 + 入口卡片）
 │   │   ├── Mechanical.tsx          # 机械灵魂（功率/扭矩/风阻/重量深度弹窗）
@@ -130,7 +121,6 @@ aether-digital-twin/
 
 - **Node.js** >= 18.0.0
 - **npm** >= 9.0.0
-- **Google Gemini API Key**（用于 AI 对话功能）
 - **Supabase 项目**（用于实时留言板功能）
 
 ### 安装步骤
@@ -151,9 +141,6 @@ npm install
 # Supabase 配置
 VITE_SUPABASE_URL=https://your-project.supabase.co
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-
-# Google Gemini API（用于 AI 聊天）
-GEMINI_API_KEY=your_gemini_api_key
 ```
 
 ```bash
